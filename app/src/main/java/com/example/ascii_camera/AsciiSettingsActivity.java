@@ -1,6 +1,7 @@
 package com.example.ascii_camera;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,14 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AsciiSettingsActivity extends AppCompatActivity {
 
-    // TODO: 8. 8. 2025 add minimum magnitude level 
     private Button btSettings;
+    private Button btSaveSettings;
     private EditText etCharset;
     private SeekBar sbFontSize;
+    private SeekBar sbMinMag;
     private CheckBox chbMonochrome;
     private CheckBox chbEdges;
     private LinearLayout llSettingContainer;
     private TextView tvFontSize;
+    private TextView tvMinMag;
     private Ascii ascii;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +31,21 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings_ascii);
         initVars();
 
-        ascii = (Ascii) getIntent().getExtras().get("Ascii");
+        ascii = getIntent().getParcelableExtra("Ascii");
+        assert ascii != null;
+        Log.d("ascii_settings",ascii.toString());
 
-        btSettings.setOnClickListener(new OnSettingButtonClick());
+        btSettings.setOnClickListener(new OnSettingsButtonClick());
         sbFontSize.setOnSeekBarChangeListener(new FontSizeTextAdjust());
+        sbMinMag.setOnSeekBarChangeListener(new MinMagTextAdjust());
+        btSaveSettings.setOnClickListener(new OnSaveSettingsButtonClick());
+
+        etCharset.setText(ascii.getSettings().getCharset());
+        sbFontSize.setProgress(ascii.getSettings().getFontSize());
+        sbMinMag.setProgress(ascii.getSettings().getMinMag());
+        chbEdges.setChecked(ascii.getSettings().isEdges());
+        chbMonochrome.setChecked(ascii.getSettings().isMonochrome());
+
     }
 
     private void initVars() {
@@ -42,10 +56,12 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         chbEdges = findViewById(R.id.chbEdges);
         llSettingContainer = findViewById(R.id.llSettingContainer);
         tvFontSize = findViewById(R.id.tvFontSize);
-
+        sbMinMag = findViewById(R.id.sbMinMag);
+        tvMinMag = findViewById(R.id.tvMinMag);
+        btSaveSettings =  findViewById(R.id.btSaveSettings);
     }
 
-    class OnSettingButtonClick implements View.OnClickListener {
+    class OnSettingsButtonClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             switch (llSettingContainer.getVisibility()) {
@@ -55,7 +71,23 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 case View.INVISIBLE:
                     llSettingContainer.setVisibility(View.VISIBLE);
                     break;
+                default:
+
             }
+        }
+    }
+
+    class OnSaveSettingsButtonClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            ascii.getSettings().setAll(etCharset.getText().toString(),
+                    sbFontSize.getProgress(),
+                    chbMonochrome.isChecked(),
+                    chbEdges.isChecked(),
+                    sbMinMag.getProgress());
+
+            llSettingContainer.setVisibility(View.INVISIBLE);
+            Log.d("ascii_settings",ascii.toString());
         }
     }
 
@@ -63,6 +95,16 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             tvFontSize.setText( "Font size: " + progress );
+        }
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {}
+    }
+    class MinMagTextAdjust implements SeekBar.OnSeekBarChangeListener{
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            tvMinMag.setText( "Minimal magnitude: " + progress );
         }
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {}

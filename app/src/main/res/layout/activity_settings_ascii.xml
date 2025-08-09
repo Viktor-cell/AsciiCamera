@@ -69,8 +69,34 @@
                 android:id="@+id/sbFontSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:min="4"
                 android:max="20"
-                android:min="8"
+                />
+
+        </LinearLayout>
+
+        <!-- Min Mag -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:layout_margin="5dp"
+
+            >
+            <TextView
+                android:id="@+id/tvMinMag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Minimal magnituge: "
+                />
+
+            <SeekBar
+                android:id="@+id/sbMinMag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:min="100"
+                android:max="1000"
                 />
 
         </LinearLayout>
@@ -116,9 +142,10 @@
                 />
 
         </LinearLayout>
+
         <!-- Save -->
         <Button
-            android:id="@+id/btSaveSetting"
+            android:id="@+id/btSaveSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"

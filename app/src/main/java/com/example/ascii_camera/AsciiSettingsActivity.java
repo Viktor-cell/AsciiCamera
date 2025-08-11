@@ -25,7 +25,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     private LinearLayout llSettingContainer;
     private TextView tvFontSize;
     private TextView tvMinMag;
-    private TextView tvAscii;
     private Ascii ascii;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +47,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         chbEdges.setChecked(ascii.getSettings().isEdges());
         chbMonochrome.setChecked(ascii.getSettings().isMonochrome());
 
-        ascii.generateColoredText();
-        tvAscii.setText(ascii.getSsbAsciiText());
+        // TODO: 11. 8. 2025 make rendering using canvas
     }
 
     private void initVars() {
@@ -63,7 +61,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         sbMinMag = findViewById(R.id.sbMinMag);
         tvMinMag = findViewById(R.id.tvMinMag);
         btSaveSettings =  findViewById(R.id.btSaveSettings);
-        tvAscii = findViewById(R.id.tvAscii);
     }
 
     class OnSettingsButtonClick implements View.OnClickListener {
@@ -93,18 +90,8 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
             llSettingContainer.setVisibility(View.INVISIBLE);
             Log.d("ascii_settings",ascii.toString());
-            ascii.generateColoredText();
         }
 
-    }
-
-    void doGenerationInBackground() {
-        new Thread(() -> {
-            ascii.generateColoredText();
-            runOnUiThread(() -> {
-                tvAscii.setText(ascii.getSsbAsciiText());
-            });
-        }).run();
     }
 
     class FontSizeTextAdjust implements SeekBar.OnSeekBarChangeListener{

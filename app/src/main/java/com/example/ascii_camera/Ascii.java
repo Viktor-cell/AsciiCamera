@@ -7,48 +7,26 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.util.Pair;
 
 
+import androidx.annotation.NonNull;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 public class Ascii implements Parcelable {
     private Bitmap bmp;
+
     private AciiSettings settings;
 
-    // TODO: 11. 8. 2025 change theese two for arrays of characters and colors 
-    private HashMap<Pair<Integer, Integer>, Character> edgePositions;
-    private SpannableStringBuilder ssbAsciiText;
-
+    private CharactersColorsArray chcArray;
 
     public void setBmp(Bitmap bmp) {
         this.bmp = bmp;
     }
 
-    public void setSsAsciiText(SpannableStringBuilder ssbAsciiText) {
-        this.ssbAsciiText = ssbAsciiText;
-    }
-
-    public void setEdgePositions(HashMap<Pair<Integer, Integer>, Character> edgePositions) {
-        this.edgePositions = edgePositions;
-    }
-
     public void setSettings(AciiSettings settings) {
         this.settings = settings;
-    }
-
-    public SpannableStringBuilder getSsbAsciiText() {
-        return ssbAsciiText;
-    }
-
-    public HashMap<Pair<Integer, Integer>, Character> getEdgePositions() {
-        return edgePositions;
     }
 
     public AciiSettings getSettings() {
@@ -60,11 +38,9 @@ public class Ascii implements Parcelable {
     }
 
 
-    // NOTE: Only init bmp and settings here, edge positions and ascii text are not Parceable so after sending it they will be null
     public Ascii(Context context, Uri uri, AciiSettings settings) {
-        this.settings = new AciiSettings(settings);
 
-        InputStream inputStream = null;
+        InputStream inputStream;
 
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
@@ -83,69 +59,23 @@ public class Ascii implements Parcelable {
                 tmp.getHeight() / settings.getFontSize(),
                 true);
 
-
+        this.settings = new AciiSettings(settings);
+        this.chcArray = new CharactersColorsArray(bmp.getWidth(), bmp.getHeight());
     }
 
-    // Generated parceable interface by android studio
-    // NOTE: If you would need to send edge data or the ascii string it will not work!!!
-
-    protected Ascii(Parcel in) {
-        bmp = in.readParcelable(Bitmap.class.getClassLoader());
-        settings = in.readParcelable(AciiSettings.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(bmp, flags);
-        dest.writeParcelable(settings, flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Ascii> CREATOR = new Creator<Ascii>() {
-        @Override
-        public Ascii createFromParcel(Parcel in) {
-            return new Ascii(in);
-        }
-
-        @Override
-        public Ascii[] newArray(int size) {
-            return new Ascii[size];
-        }
-    };
-    @Override
-    public String toString() {
-        return "Ascii{" +
-                "bmp=" + bmp +
-                ", settings=" + settings +
-                ", edgePositions=" + edgePositions +
-                ", ssbAsciiText=" + ssbAsciiText +
-                '}';
-    }
-
-    // TODO: 11. 8. 2025 change 
     public void generateColoredText() {
-        ssbAsciiText = new SpannableStringBuilder();
-        for (int y = 0; y < bmp.getHeight(); y++ ) {
-            for (int x = 0; x < bmp.getWidth(); x++ ) {
-                int charIndex =  (int)(calculateLightness(bmp.getPixel(x, y)) / 255f * settings.getCharset().length());
-                ssbAsciiText.append(settings.getCharset().charAt(charIndex));
-
-                ssbAsciiText.setSpan(new ForegroundColorSpan(bmp.getPixel(x, y)),
-                        ssbAsciiText.length() - 1,
-                        ssbAsciiText.length(),
-                        SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE );
+        // TODO: 11. 8. 2025 implement
+        int charIndex;
+        for (int y = 0; y < chcArray.getHeight(); y++) {
+            for (int x = 0; x < chcArray.getWidth(); x++) {
+                charIndex = (int)(calculateLightness(chcArray.getColor(x, y)) / 255f * settings.getCharset().length());
+                chcArray.setCharacter(x, y, settings.getCharset().charAt(charIndex));
+                chcArray.setColor(x, y, bmp.getPixel(x, y));
             }
-            ssbAsciiText.append("\n");
         }
     }
 
-    // TODO: 11. 8. 2025 change
     private void applySobel() {
-        edgePositions = new HashMap<>();
         int[][] kernelGx = new int[][]{
                 {-1, 0, 1},
                 {-2, 0, 2},
@@ -184,7 +114,7 @@ public class Ascii implements Parcelable {
                         magY += b * valGy;
 
                         if ( Math.pow(magX, 2) + Math.pow(magY, 2) > settings.getMinMag() ) {
-                            edgePositions.put(new Pair<>(x, y), getEdgeCharacter(magX, magY));
+                            chcArray.setCharacter(x, y, getEdgeCharacter(magX, magY));
                         }
                     }
                 }
@@ -215,5 +145,34 @@ public class Ascii implements Parcelable {
             return ' ';
         }
 
+    }
+    protected Ascii(Parcel in) {
+        bmp = in.readParcelable(Bitmap.class.getClassLoader());
+        settings = in.readParcelable(AciiSettings.class.getClassLoader());
+        chcArray = in.readParcelable(CharactersColorsArray.class.getClassLoader());
+    }
+
+    public static final Creator<Ascii> CREATOR = new Creator<Ascii>() {
+        @Override
+        public Ascii createFromParcel(Parcel in) {
+            return new Ascii(in);
+        }
+
+        @Override
+        public Ascii[] newArray(int size) {
+            return new Ascii[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeParcelable(bmp, flags);
+        dest.writeParcelable(settings, flags);
+        dest.writeParcelable(chcArray, flags);
     }
 }

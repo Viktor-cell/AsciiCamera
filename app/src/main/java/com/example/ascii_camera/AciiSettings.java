@@ -9,8 +9,8 @@ public class AciiSettings implements Parcelable {
     private boolean monochrome;
     private boolean edges;
     private int minMag;
-    public static final String DEFAULT_CHARSET = ".;oO@#";
-    public static final int DEFAULT_FONT_SIZE = 8;
+    public static final String DEFAULT_CHARSET = "`.-':_,^=;><+!rc*/z?sTv)J7(|Fi{C}fI31tluneoZ5Yxjya2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
+    public static final int DEFAULT_FONT_SIZE = 20;
     public static final boolean DEFAULT_MONOCHROME = false;
     public static final boolean DEFAULT_EDGES = false;
     private static final int DEFAULT_MIN_MAG = 400;

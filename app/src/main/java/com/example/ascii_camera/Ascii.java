@@ -9,6 +9,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Pair;
 
 
@@ -19,13 +20,19 @@ import java.util.HashMap;
 
 public class Ascii implements Parcelable {
     private Bitmap bmp;
+    private AciiSettings settings;
+
+    // TODO: 11. 8. 2025 change theese two for arrays of characters and colors 
+    private HashMap<Pair<Integer, Integer>, Character> edgePositions;
+    private SpannableStringBuilder ssbAsciiText;
+
 
     public void setBmp(Bitmap bmp) {
         this.bmp = bmp;
     }
 
-    public void setSsAsciiText(SpannableString ssAsciiText) {
-        this.ssAsciiText = ssAsciiText;
+    public void setSsAsciiText(SpannableStringBuilder ssbAsciiText) {
+        this.ssbAsciiText = ssbAsciiText;
     }
 
     public void setEdgePositions(HashMap<Pair<Integer, Integer>, Character> edgePositions) {
@@ -36,8 +43,8 @@ public class Ascii implements Parcelable {
         this.settings = settings;
     }
 
-    public SpannableString getSsAsciiText() {
-        return ssAsciiText;
+    public SpannableStringBuilder getSsbAsciiText() {
+        return ssbAsciiText;
     }
 
     public HashMap<Pair<Integer, Integer>, Character> getEdgePositions() {
@@ -52,9 +59,6 @@ public class Ascii implements Parcelable {
         return bmp;
     }
 
-    private AciiSettings settings;
-    private HashMap<Pair<Integer, Integer>, Character> edgePositions;
-    private SpannableString ssAsciiText;
 
     // NOTE: Only init bmp and settings here, edge positions and ascii text are not Parceable so after sending it they will be null
     public Ascii(Context context, Uri uri, AciiSettings settings) {
@@ -78,6 +82,7 @@ public class Ascii implements Parcelable {
                 tmp.getWidth() / settings.getFontSize(),
                 tmp.getHeight() / settings.getFontSize(),
                 true);
+
 
     }
 
@@ -117,20 +122,28 @@ public class Ascii implements Parcelable {
                 "bmp=" + bmp +
                 ", settings=" + settings +
                 ", edgePositions=" + edgePositions +
-                ", ssAsciiText=" + ssAsciiText +
+                ", ssbAsciiText=" + ssbAsciiText +
                 '}';
     }
 
-    private void generateColoredText() {
-        SpannableStringBuilder ssb = new SpannableStringBuilder();
-        for (int x = 0; x < bmp.getWidth(); x++ ) {
-            for (int y = 0; y < bmp.getHeight(); y++ ) {
-                    // TODO finish ascii generation
-            }
-        }
+    // TODO: 11. 8. 2025 change 
+    public void generateColoredText() {
+        ssbAsciiText = new SpannableStringBuilder();
+        for (int y = 0; y < bmp.getHeight(); y++ ) {
+            for (int x = 0; x < bmp.getWidth(); x++ ) {
+                int charIndex =  (int)(calculateLightness(bmp.getPixel(x, y)) / 255f * settings.getCharset().length());
+                ssbAsciiText.append(settings.getCharset().charAt(charIndex));
 
+                ssbAsciiText.setSpan(new ForegroundColorSpan(bmp.getPixel(x, y)),
+                        ssbAsciiText.length() - 1,
+                        ssbAsciiText.length(),
+                        SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE );
+            }
+            ssbAsciiText.append("\n");
+        }
     }
 
+    // TODO: 11. 8. 2025 change
     private void applySobel() {
         edgePositions = new HashMap<>();
         int[][] kernelGx = new int[][]{

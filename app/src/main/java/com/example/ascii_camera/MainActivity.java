@@ -15,7 +15,6 @@ import androidx.lifecycle.MutableLiveData;
 
 public class MainActivity extends AppCompatActivity {
 
-    //TODO implement camera
     private Button btPhotoSelection;
     private MutableLiveData<Uri> mldPhotoUri;
 
@@ -25,34 +24,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btPhotoSelection = findViewById(R.id.btPhotoSelection);
-        btPhotoSelection.setOnClickListener(new SelectPhoto());
         mldPhotoUri = new MutableLiveData<>();
 
-        mldPhotoUri.observe(this, uri -> {
-            Intent i = new Intent(MainActivity.this, AsciiSettingsActivity.class);
-            Ascii ascii = new Ascii(this, uri, AciiSettings.defaultValues());
-            i.putExtra("Ascii", ascii);
-            startActivity(i);
-        });
+        btPhotoSelection.setOnClickListener(new SelectPhoto());
 
+        mldPhotoUri.observe(this, uri -> {
+            Intent intent = new Intent(MainActivity.this, AsciiSettingsActivity.class);
+            Ascii ascii = new Ascii(uri, AsciiSettings.defaultValues());
+            Log.d("main_activity", ascii.toString());
+            intent.putExtra("Ascii", ascii);
+            startActivity(intent);
+        });
     }
 
-    class SelectPhoto implements View.OnClickListener {
-        ActivityResultLauncher<PickVisualMediaRequest> pickPhoto = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), mldPhotoUri -> {
-            if (mldPhotoUri == null) {
-                Log.d("Photo", "empty mldPhotoUri, photo selection failed");
-            } else {
-                Log.d("Photo", "mldPhotoUri: " + mldPhotoUri);
-                MainActivity.this.mldPhotoUri.setValue(mldPhotoUri);
+    private class SelectPhoto implements View.OnClickListener {
+        private final ActivityResultLauncher<PickVisualMediaRequest> pickPhotoLauncher =
+                registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                    if (uri == null) {
+                        Log.d("Photo", "empty mldPhotoUri, photo selection failed");
+                    } else {
+                        Log.d("Photo", "mldPhotoUri: " + uri);
+                        mldPhotoUri.setValue(uri);
+                    }
+                });
 
-            }
-        });
         @Override
         public void onClick(View v) {
-            pickPhoto.launch(
-                    new PickVisualMediaRequest
-                            .Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE )
+            pickPhotoLauncher.launch(
+                    new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                             .build()
             );
         }

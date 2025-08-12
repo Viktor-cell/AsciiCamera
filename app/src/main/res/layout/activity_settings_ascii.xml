@@ -7,45 +7,51 @@
     android:layout_height="match_parent"
     tools:context=".AsciiSettingsActivity">
 
+    <com.example.ascii_camera.AsciiView
+        android:id="@+id/avAscii"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/monospaced_font"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Settings"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/llSettingContainer"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btSettings"
         android:orientation="vertical"
         android:visibility="invisible"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btSettings">
 
         <!-- Charset -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="visible"
             android:layout_margin="5dp"
-            >
+            android:orientation="horizontal"
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Character set:"
-                />
+                android:text="Character set:" />
 
             <EditText
                 android:id="@+id/etCharset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text" />
 
         </LinearLayout>
 
@@ -53,25 +59,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:orientation="vertical"
             android:visibility="visible"
-            android:layout_margin="5dp"
 
             >
+
             <TextView
                 android:id="@+id/tvFontSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Font size:"
-                />
+                android:text="Font size:" />
 
             <SeekBar
                 android:id="@+id/sbFontSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:min="14"
-                android:max="40"
-                />
+                android:max="150"
+                android:min="10" />
 
         </LinearLayout>
 
@@ -79,25 +84,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:orientation="vertical"
             android:visibility="visible"
-            android:layout_margin="5dp"
 
             >
+
             <TextView
                 android:id="@+id/tvMinMag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minimal magnituge: "
-                />
+                android:text="Minimal magnituge: " />
 
             <SeekBar
                 android:id="@+id/sbMinMag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:min="100"
                 android:max="1000"
-                />
+                android:min="100" />
 
         </LinearLayout>
 
@@ -105,20 +109,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="visible"
             android:layout_margin="5dp"
-            >
+            android:orientation="horizontal"
+            android:visibility="visible">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Monochrome:"
-                />
+                android:text="Monochrome:" />
+
             <CheckBox
                 android:id="@+id/chbMonochrome"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -126,20 +129,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="visible"
             android:layout_margin="5dp"
-            >
+            android:orientation="horizontal"
+            android:visibility="visible">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edges:"
-                />
+                android:text="Edges:" />
+
             <CheckBox
                 android:id="@+id/chbEdges"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -148,12 +150,10 @@
             android:id="@+id/btSaveSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
             android:layout_margin="5dp"
-            />
+            android:text="Save" />
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

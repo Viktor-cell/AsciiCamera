@@ -1,21 +1,23 @@
 package com.example.ascii_camera;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 public class AsciiSettingsActivity extends AppCompatActivity {
 
     private Button btSettings;
-    private Button btSaveSettings;
     private EditText etCharset;
     private SeekBar sbFontSize;
     private SeekBar sbMinMag;
@@ -26,25 +28,40 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     private TextView tvMinMag;
     private Ascii ascii;
     private AsciiView avAscii;
+    private MutableLiveData<Boolean> needsReset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_ascii);
+        needsReset = new MutableLiveData<>(false);
 
         initVars();
 
         ascii = getIntent().getParcelableExtra("Ascii");
-        Log.d("ascii_settings", ascii.toString());
+        assert ascii != null;
+        ascii.initBmpIfNeeded(this);
 
         setupListeners();
         loadSettingsIntoViews();
-        presentAscii();
+
+        needsReset.observe(this, does -> {
+            if (does) {
+                ascii.setSettings(new AsciiSettings(
+                        etCharset.getText().toString(),
+                        sbFontSize.getProgress(),
+                        chbMonochrome.isChecked(),
+                        chbEdges.isChecked(),
+                        sbMinMag.getProgress()
+                ));
+                presentAscii();
+                needsReset.setValue(false);
+            }
+        });
     }
 
     private void initVars() {
         btSettings = findViewById(R.id.btSettings);
-        btSaveSettings = findViewById(R.id.btSaveSettings);
         etCharset = findViewById(R.id.etCharset);
         sbFontSize = findViewById(R.id.sbFontSize);
         sbMinMag = findViewById(R.id.sbMinMag);
@@ -58,9 +75,11 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btSettings.setOnClickListener(new OnSettingsButtonClick());
-        btSaveSettings.setOnClickListener(new OnSaveSettingsButtonClick());
         sbFontSize.setOnSeekBarChangeListener(new FontSizeTextAdjust());
         sbMinMag.setOnSeekBarChangeListener(new MinMagTextAdjust());
+        chbEdges.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
+        etCharset.addTextChangedListener(new OnCharsetChange());
+        chbMonochrome.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
     }
 
     private void loadSettingsIntoViews() {
@@ -74,10 +93,39 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     }
 
     private void presentAscii() {
-        ascii.initBmps(this);
+        //ascii.initBmpIfNeeded(this);
         ascii.generateColoredText();
+
         avAscii.setChcAscii(ascii.getChcArray());
         avAscii.redraw();
+    }
+
+    private class OnCharsetChange implements TextWatcher {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().endsWith(" ") && s.length() != 1) {
+                etCharset.setText(s.subSequence(0, s.length() - 1));
+                etCharset.setSelection(s.length() - 1);
+            }
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.toString().isEmpty()) {
+                etCharset.setText(" ");
+            }
+            needsReset.setValue(true);
+        }
+    }
+
+    private class OnCheckBoxCheckChange implements CompoundButton.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            needsReset.setValue(true);
+        }
     }
 
     private class OnSettingsButtonClick implements View.OnClickListener {
@@ -91,27 +139,11 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         }
     }
 
-    private class OnSaveSettingsButtonClick implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            llSettingContainer.setVisibility(View.INVISIBLE);
-
-            ascii.setSettings(new AsciiSettings(
-                    etCharset.getText().toString(),
-                    sbFontSize.getProgress(),
-                    chbMonochrome.isChecked(),
-                    chbEdges.isChecked(),
-                    sbMinMag.getProgress()
-            ));
-            Log.d("ascii_settings", ascii.toString());
-            presentAscii();
-        }
-    }
-
     private class FontSizeTextAdjust implements SeekBar.OnSeekBarChangeListener {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             tvFontSize.setText("Font size: " + progress);
+            needsReset.setValue(true);
         }
 
         @Override
@@ -127,6 +159,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             tvMinMag.setText("Minimal magnitude: " + progress);
+            needsReset.setValue(true);
         }
 
         @Override

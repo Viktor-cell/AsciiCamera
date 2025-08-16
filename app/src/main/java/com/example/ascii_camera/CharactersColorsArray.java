@@ -17,10 +17,10 @@ public class CharactersColorsArray implements Parcelable {
             return new CharactersColorsArray[size];
         }
     };
-    private char[] characters;
-    private int[] colors; // argb format
-    private int width;
-    private int height;
+    private final char[] characters;
+    private final int[] colors; // argb format
+    private final int width;
+    private final int height;
 
     public CharactersColorsArray(int width, int height) {
         this.width = width;

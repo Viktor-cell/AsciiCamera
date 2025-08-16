@@ -12,8 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class Ascii implements Parcelable {
-    // Parcelable methods
-    public static final Creator<Ascii> CREATOR = new Creator<Ascii>() {
+    public static final Creator<Ascii> CREATOR = new Creator<>() {
         @Override
         public Ascii createFromParcel(Parcel in) {
             return new Ascii(in);
@@ -28,15 +27,13 @@ public class Ascii implements Parcelable {
     private Bitmap bmpOriginal;
     private CharactersColorsArray chcArray;
     private AsciiSettings settings;
-    private Uri uriBmp;
+    private final Uri uriBmp;
 
-    // Parcelable constructor
     protected Ascii(Parcel in) {
         settings = in.readParcelable(AsciiSettings.class.getClassLoader());
         uriBmp = in.readParcelable(Uri.class.getClassLoader());
     }
 
-    // Main constructor
     public Ascii(Uri uriBmp, AsciiSettings settings) {
         this.uriBmp = uriBmp;
         this.settings = settings;
@@ -85,10 +82,14 @@ public class Ascii implements Parcelable {
     public void setSettings(AsciiSettings settings) {
         this.settings = settings;
         createBmpScaled();
+        this.chcArray = new CharactersColorsArray(bmpScaled.getWidth(), bmpScaled.getHeight());
     }
 
-    // Initialization method to load bitmaps from Uri using Context
-    public void initBmps(Context context) {
+    public void initBmpIfNeeded(Context context) {
+        if (bmpOriginal != null) {
+            return;
+        }
+
         try (InputStream inputStream = context.getContentResolver().openInputStream(uriBmp)) {
             bmpOriginal = BitmapFactory.decodeStream(inputStream);
         } catch (FileNotFoundException e) {
@@ -101,9 +102,7 @@ public class Ascii implements Parcelable {
         this.chcArray = new CharactersColorsArray(bmpScaled.getWidth(), bmpScaled.getHeight());
     }
 
-    // Create scaled bitmap from original based on font size setting
     public void createBmpScaled() {
-        if (bmpOriginal == null || settings == null) return;
         this.bmpScaled = Bitmap.createScaledBitmap(
                 bmpOriginal,
                 bmpOriginal.getWidth() / settings.getFontSize(),
@@ -111,7 +110,6 @@ public class Ascii implements Parcelable {
                 true);
     }
 
-    // ASCII art generation method
     public void generateColoredText() {
         int charIndex;
         for (int y = 0; y < chcArray.getHeight(); y++) {
@@ -120,10 +118,6 @@ public class Ascii implements Parcelable {
                 // create array
                 charIndex = (int) (calculateLightness(bmpScaled.getPixel(x, y)) / 255f * settings.getCharset().length());
                 chcArray.setCharacter(x, y, settings.getCharset().charAt(charIndex));
-
-                if (settings.isEdges()) {
-                    applySobel();
-                }
 
                 if (settings.isMonochrome()) {
                     int shade = calculateLightness(bmpScaled.getPixel(x, y));
@@ -138,9 +132,12 @@ public class Ascii implements Parcelable {
                 // charset in this function
             }
         }
+
+        if (settings.isEdges()) {
+            applySobel();
+        }
     }
 
-    // Sobel edge detection application (corrected nested loops)
     private void applySobel() {
         int[][] kernelGx = {
                 {-1, 0, 1},
@@ -194,7 +191,6 @@ public class Ascii implements Parcelable {
         }
     }
 
-    // Calculate perceived lightness of pixel
     private int calculateLightness(int pixel) {
         int r = Color.red(pixel);
         int g = Color.green(pixel);
@@ -202,7 +198,6 @@ public class Ascii implements Parcelable {
         return (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
     }
 
-    // Choose ASCII character based on edge angle
     private char getEdgeCharacter(double magX, double magY) {
         double angle = Math.toDegrees(Math.atan2(magY, magX));
 

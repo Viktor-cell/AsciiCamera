@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
 
     private CharactersColorsArray chcAscii;
-    private Paint paint;
+    private final Paint paint;
 
     public AsciiView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -42,8 +42,7 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
         float textSize = calculateTextSize();
         paint.setTextSize(textSize);
 
-        // Calculate starting points to center the text block
-        float startY = (getHeight() - chcAscii.getHeight() * textSize) / 2 + textSize; // Add textSize for baseline adjustment
+        float startY = (getHeight() - chcAscii.getHeight() * textSize) / 2 + textSize;
         float startX = (getWidth() - chcAscii.getWidth() * textSize) / 2;
         float step = textSize;
 
@@ -66,7 +65,6 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
 
     private float calculateTextSize() {
         if (chcAscii == null || chcAscii.getWidth() == 0 || chcAscii.getHeight() == 0) {
-            // Prevent division by zero or null pointer
             return 12f; // fallback text size
         }
         if (chcAscii.getWidth() > chcAscii.getHeight()) {

@@ -22,20 +22,15 @@ public class AsciiSettings implements Parcelable {
         }
     };
     private static final int DEFAULT_MIN_MAG = 400;
-    // Fields
+
     private String charset;
     private int fontSize; // How many pixels in one letter
     private boolean monochrome;
     private boolean edges;
     private int minMag;
 
-    // Constructors
     public AsciiSettings(String charset, int fontSize, boolean monochrome, boolean edges, int minMag) {
         setAll(charset, fontSize, monochrome, edges, minMag);
-    }
-
-    public AsciiSettings(AsciiSettings other) {
-        setAll(other.getCharset(), other.getFontSize(), other.isMonochrome(), other.isEdges(), other.getMinMag());
     }
 
     protected AsciiSettings(Parcel in) {
@@ -46,12 +41,10 @@ public class AsciiSettings implements Parcelable {
         minMag = in.readInt();
     }
 
-    // Static factory method for defaults
     public static AsciiSettings defaultValues() {
         return new AsciiSettings(DEFAULT_CHARSET, DEFAULT_FONT_SIZE, DEFAULT_MONOCHROME, DEFAULT_EDGES, DEFAULT_MIN_MAG);
     }
 
-    // Parcelable implementation
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(charset);
@@ -65,13 +58,11 @@ public class AsciiSettings implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
-    // Getters
+    
     public String getCharset() {
         return charset;
     }
 
-    // Setters
     public void setCharset(String charset) {
         this.charset = charset;
     }
@@ -108,7 +99,6 @@ public class AsciiSettings implements Parcelable {
         this.minMag = minMag;
     }
 
-    // Utility setters
     public void setAll(String charset, int fontSize, boolean monochrome, boolean edges, int minMag) {
         setCharset(charset);
         setFontSize(fontSize);

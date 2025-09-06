@@ -1,6 +1,9 @@
 package com.example.ascii_camera;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -17,6 +20,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+
+import java.io.OutputStream;
 
 public class AsciiSettingsActivity extends AppCompatActivity {
 
@@ -120,7 +125,21 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
             alert.setPositiveButton("OK", (dialog, which) -> {
                 String fileName = etFileName.getText().toString();
-                MediaStore.Images.Media.insertImage(view.getContext().getContentResolver(), out, "ascii_" + fileName, "");
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, "ascii_" + fileName + ".png");
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                ContentResolver resolver = getContentResolver();
+
+                Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+                try {
+                    // Save as PNG (lossless, preserves colors)
+                    OutputStream outStream = resolver.openOutputStream(uri);
+                    out.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+                } catch (Exception e) {
+
+                }
             });
 
             alert.setNegativeButton("Cancel", null);

@@ -23,11 +23,11 @@ public class Ascii implements Parcelable {
             return new Ascii[size];
         }
     };
+    private final Uri uriBmp;
     private Bitmap bmpScaled;
     private Bitmap bmpOriginal;
     private CharactersColorsArray chcArray;
     private AsciiSettings settings;
-    private final Uri uriBmp;
 
     protected Ascii(Parcel in) {
         settings = in.readParcelable(AsciiSettings.class.getClassLoader());

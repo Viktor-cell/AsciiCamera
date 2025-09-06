@@ -1,6 +1,8 @@
 package com.example.ascii_camera;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -12,12 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 public class AsciiSettingsActivity extends AppCompatActivity {
 
     private Button btSettings;
+    private Button btSaveImage;
     private EditText etCharset;
     private SeekBar sbFontSize;
     private SeekBar sbMinMag;
@@ -62,6 +66,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
     private void initVars() {
         btSettings = findViewById(R.id.btSettings);
+        btSaveImage = findViewById(R.id.btSaveImage);
         etCharset = findViewById(R.id.etCharset);
         sbFontSize = findViewById(R.id.sbFontSize);
         sbMinMag = findViewById(R.id.sbMinMag);
@@ -75,6 +80,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btSettings.setOnClickListener(new OnSettingsButtonClick());
+        btSaveImage.setOnClickListener(new OnSaveImageButtonClick());
         sbFontSize.setOnSeekBarChangeListener(new FontSizeTextAdjust());
         sbMinMag.setOnSeekBarChangeListener(new MinMagTextAdjust());
         chbEdges.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
@@ -100,6 +106,29 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         avAscii.redraw();
     }
 
+    private class OnSaveImageButtonClick implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Bitmap out = avAscii.getAsciiAsBitmap();
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+            alert.setMessage("Put the name of the file");
+            alert.setTitle("File name");
+
+            EditText etFileName = new EditText(view.getContext());
+            alert.setView(etFileName);
+
+            alert.setPositiveButton("OK", (dialog, which) -> {
+                String fileName = etFileName.getText().toString();
+                MediaStore.Images.Media.insertImage(view.getContext().getContentResolver(), out, "ascii_" + fileName, "");
+            });
+
+            alert.setNegativeButton("Cancel", null);
+
+            alert.show();
+        }
+    }
+
     private class OnCharsetChange implements TextWatcher {
 
         @Override
@@ -109,8 +138,10 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 etCharset.setSelection(s.length() - 1);
             }
         }
+
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {

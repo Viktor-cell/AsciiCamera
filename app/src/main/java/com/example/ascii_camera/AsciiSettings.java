@@ -58,7 +58,7 @@ public class AsciiSettings implements Parcelable {
     public int describeContents() {
         return 0;
     }
-    
+
     public String getCharset() {
         return charset;
     }

@@ -1,6 +1,7 @@
 package com.example.ascii_camera;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -11,8 +12,8 @@ import androidx.annotation.Nullable;
 
 public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
 
-    private CharactersColorsArray chcAscii;
     private final Paint paint;
+    private CharactersColorsArray chcAscii;
 
     public AsciiView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -46,6 +47,9 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
         float startX = (getWidth() - chcAscii.getWidth() * textSize) / 2;
         float step = textSize;
 
+        Log.d("ascii_view", "startX: " + startX + " startY: " + startY);
+
+
         for (int y = 0; y < chcAscii.getHeight(); y++) {
             for (int x = 0; x < chcAscii.getWidth(); x++) {
                 paint.setColor(chcAscii.getColor(x, y));
@@ -64,13 +68,24 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
     }
 
     private float calculateTextSize() {
-        if (chcAscii == null || chcAscii.getWidth() == 0 || chcAscii.getHeight() == 0) {
-            return 12f; // fallback text size
-        }
-        if (chcAscii.getWidth() > chcAscii.getHeight()) {
+        if (chcAscii.getWidth() / 9 >= chcAscii.getHeight() / 16) {
             return (float) getWidth() / chcAscii.getWidth();
         } else {
             return (float) getHeight() / chcAscii.getHeight();
         }
+    }
+
+    public Bitmap getAsciiAsBitmap() {
+        float textSize = calculateTextSize();
+
+        Bitmap out = Bitmap.createBitmap(
+                getWidth(),
+                getHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        draw(new Canvas(out));
+
+        return out;
     }
 }

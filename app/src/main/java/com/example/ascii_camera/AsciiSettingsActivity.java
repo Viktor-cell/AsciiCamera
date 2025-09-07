@@ -2,6 +2,7 @@ package com.example.ascii_camera;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -104,7 +105,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     }
 
     private void presentAscii() {
-        //ascii.initBmpIfNeeded(this);
+        ascii.initBmpIfNeeded(this);
         ascii.generateColoredText();
 
         avAscii.setChcAscii(ascii.getChcArray());
@@ -134,12 +135,14 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
                 try {
-                    // Save as PNG (lossless, preserves colors)
                     OutputStream outStream = resolver.openOutputStream(uri);
                     out.compress(Bitmap.CompressFormat.PNG, 100, outStream);
                 } catch (Exception e) {
 
                 }
+
+                Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);
+                startActivity(intent);
             });
 
             alert.setNegativeButton("Cancel", null);

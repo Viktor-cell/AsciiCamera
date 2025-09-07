@@ -29,7 +29,7 @@ public class Ascii implements Parcelable {
     private CharactersColorsArray chcArray;
     private AsciiSettings settings;
 
-    protected Ascii(Parcel in) {
+    public Ascii(Parcel in) {
         settings = in.readParcelable(AsciiSettings.class.getClassLoader());
         uriBmp = in.readParcelable(Uri.class.getClassLoader());
     }

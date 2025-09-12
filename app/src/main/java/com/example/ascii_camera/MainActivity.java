@@ -18,26 +18,33 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.MutableLiveData;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
     private Button btMenu;
     private MutableLiveData<Uri> mldPhotoUri;
-    Gallery gallery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getPermisions();
 
-        gallery = new Gallery("ascii_", this);
+        Helper.getPermisions(this, this);
+        Helper.createTmpFolder(this, "tmpImageDir");
+        Helper.showContentOfTmpFolder(this, "tmpImageDir");
+        Helper.emptyTmpFolder(this, "tmpImageDir");
+
+        for (Uri uri : Gallery.findAll(this, "ascii_")) {
+            Log.d("GALLERY_", uri.toString());
+        }
+
         btMenu = findViewById(R.id.btMenu);
-        mldPhotoUri = new MutableLiveData<>();
         btMenu.setOnClickListener(new onMenuClick());
 
-        // TODO: 7. 9. 2025 Programaticly implement generating image views from gallery of ascii images 
-
+        mldPhotoUri = new MutableLiveData<>();
         mldPhotoUri.observe(this, uri -> {
             Intent intent = new Intent(MainActivity.this, AsciiSettingsActivity.class);
             Ascii ascii = new Ascii(uri, AsciiSettings.defaultValues());
@@ -47,13 +54,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getPermisions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
-    }
+
     private class onMenuClick implements View.OnClickListener {
 
         private final ActivityResultLauncher<PickVisualMediaRequest> pickPhotoLauncher =
@@ -63,6 +64,15 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         Log.d("Photo", "mldPhotoUri: " + uri);
                         mldPhotoUri.setValue(uri);
+                    }
+                });
+
+        private Uri uri;
+        private final ActivityResultLauncher<Uri> takePhoto =
+                registerForActivityResult(new ActivityResultContracts.TakePicture(), did -> {
+                    if (did) {
+                        mldPhotoUri.setValue(uri);
+                        Log.d("DIR_", "created new temp file:" + uri.getPath() );
                     }
                 });
 
@@ -76,7 +86,19 @@ public class MainActivity extends AppCompatActivity {
                     int id = menuItem.getItemId();
 
                     if (id == R.id.fromCameraMenuItem) {
-                        // TODO: 7. 9. 2025 add camera support
+                        try {
+                            File tempFile = File.createTempFile("tmp_", ".jpg", new File(getCacheDir() + "/tmpImageDir"));
+                            uri = FileProvider.getUriForFile(
+                                    MainActivity.this,
+                                    getPackageName() + ".provider",
+                                    tempFile
+                            );
+
+                            takePhoto.launch(uri);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
                         return false;
                     }
 

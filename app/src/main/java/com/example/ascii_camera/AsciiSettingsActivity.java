@@ -44,8 +44,8 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_ascii);
-        needsReset = new MutableLiveData<>(false);
 
+        needsReset = new MutableLiveData<>(false);
         initVars();
 
         ascii = getIntent().getParcelableExtra("Ascii");
@@ -119,7 +119,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
             AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
             alert.setMessage("Put the name of the file");
-            alert.setTitle("File name");
 
             EditText etFileName = new EditText(view.getContext());
             alert.setView(etFileName);
@@ -136,9 +135,9 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
                 try {
                     OutputStream outStream = resolver.openOutputStream(uri);
-                    out.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+                    out.compress(Bitmap.CompressFormat.PNG, 75, outStream);
                 } catch (Exception e) {
-
+                    throw new RuntimeException(e);
                 }
 
                 Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);

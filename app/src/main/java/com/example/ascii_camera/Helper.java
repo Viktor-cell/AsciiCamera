@@ -18,7 +18,7 @@ public class Helper {
         if (!tmpImage.exists()) tmpImage.mkdir();
     }
 
-    public static void emptyTmpFolder(Context ctx, String name) {
+    public static void cleanTmpFolder(Context ctx, String name) {
         File dir = new File(ctx.getCacheDir() + "/" + name);
         if (!dir.exists()) {
             Log.d("DIR_", "dir doesnt exists, cant remove anything");
@@ -45,7 +45,8 @@ public class Helper {
             Log.d("DIR_", file.toString());
         }
     }
-    public static void getPermisions(Context ctx, Activity act) {
+
+    public static void getPermissions(Context ctx, Activity act) {
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(act,

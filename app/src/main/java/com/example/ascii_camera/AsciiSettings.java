@@ -10,7 +10,7 @@ public class AsciiSettings implements Parcelable {
     public static final int DEFAULT_FONT_SIZE = 25;
     public static final boolean DEFAULT_MONOCHROME = false;
     public static final boolean DEFAULT_EDGES = false;
-    public static final Creator<AsciiSettings> CREATOR = new Creator<AsciiSettings>() {
+    public static final Creator<AsciiSettings> CREATOR = new Creator<>() {
         @Override
         public AsciiSettings createFromParcel(Parcel in) {
             return new AsciiSettings(in);

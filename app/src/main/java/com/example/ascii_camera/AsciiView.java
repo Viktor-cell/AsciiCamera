@@ -76,7 +76,6 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
     }
 
     public Bitmap getAsciiAsBitmap() {
-        float textSize = calculateTextSize();
 
         Bitmap out = Bitmap.createBitmap(
                 getWidth(),

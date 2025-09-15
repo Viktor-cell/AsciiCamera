@@ -35,8 +35,8 @@ public class Gallery {
                 String thisTitle = cursor.getString(titleColumn);
                 String thisPath = cursor.getString(fullPathColumn);
 
-                if (thisTitle.toString().startsWith(prefix)) {
-                    uris.add( Uri.fromFile(new File(thisPath)) );
+                if (thisTitle.startsWith(prefix)) {
+                    uris.add(Uri.fromFile(new File(thisPath)));
                 }
             } while (cursor.moveToNext());
         }

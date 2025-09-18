@@ -86,6 +86,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             File f = new File(uri.getPath());
             Log.d("FILE_DEL_", "f exists = " + f.exists() + ", path = " + f.getPath());
             f.delete();
+            imageUris.remove(position);
             notifyItemRemoved(position);
         });
     }

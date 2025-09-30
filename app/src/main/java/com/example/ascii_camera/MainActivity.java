@@ -26,13 +26,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Helper.getPermissions(this, this);
-        Helper.createTmpFolder(this, "tmpImageDir");
-        Helper.showContentOfTmpFolder(this, "tmpImageDir");
-        Helper.cleanTmpFolder(this, "tmpImageDir");
+        Utils.getPermissions(this, this);
+        Utils.createTmpFolder(this, "tmpImageDir");
+        Utils.showContentOfTmpFolder(this, "tmpImageDir");
+        Utils.cleanTmpFolder(this, "tmpImageDir");
 
         for (Uri uri : Gallery.findAll(this, "ascii_")) {
             Log.d("GALLERY_", uri.toString());
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         View localGallery = createLocalGallery(Gallery.findAll(this, "ascii_"));
         ConstraintLayout layout = findViewById(R.id.layout);
         layout.addView(localGallery);
+
+        Log.d("USER_", Utils.getStringFromPrefs("name", this).trim());
     }
 
     View createLocalGallery(ArrayList<Uri> images) {

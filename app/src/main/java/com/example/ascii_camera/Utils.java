@@ -17,6 +17,9 @@ import java.io.File;
 import java.security.MessageDigest;
 
 public class Utils {
+
+    public static final String LOGGED_OUT_USERNAME = "anonymous";
+
     public static void createTmpFolder(Context ctx, String name) {
         File dir = ctx.getCacheDir();
         File tmpImage = new File(dir + "/" + name);
@@ -65,6 +68,15 @@ public class Utils {
         SharedPreferences sp = ctx.getSharedPreferences(PREFS_LOCATION, MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 
+        editor.putString(key, val);
+        editor.apply();
+    }
+
+    public static void editStringInPrefs(String key, String val, Context ctx) {
+        SharedPreferences sp = ctx.getSharedPreferences(PREFS_LOCATION, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.remove(key);
         editor.putString(key, val);
         editor.apply();
     }

@@ -1,11 +1,14 @@
 package com.example.ascii_camera;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,22 +31,35 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Utils.removeStringToPrefs("name", this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
 
         Log.d("USER_", Utils.getStringFromPrefs("name", this).trim());
 
-        if (!Utils.getStringFromPrefs("name", this).trim().isEmpty()) {
+        if (!Utils.getStringFromPrefs("name", this).trim().isEmpty() && !Utils.getStringFromPrefs("name", this).equals(Utils.LOGGED_OUT_USERNAME)) {
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
         }
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        handleConnectionIndicatorColor();
         initVars();
 
         btLogin.setOnClickListener(new HandleLogin());
         btSignUp.setOnClickListener(new HandleSingIn());
 
+    }
+
+    private void handleConnectionIndicatorColor() {
+        Button btn = findViewById(R.id.btLoginConnection);
+        Runnable rUpdateConnectionIndicator = () -> {
+            boolean isOnline = ServerUtils.isOnline();
+
+            btn.setBackgroundTintList(isOnline ? ColorStateList.valueOf(Color.GREEN) : ColorStateList.valueOf(Color.RED));
+        };
+        new Thread(rUpdateConnectionIndicator).start();
+        btn.setOnClickListener(view -> {
+            new Thread(rUpdateConnectionIndicator).start();
+        });
     }
 
     private void initVars() {
@@ -113,11 +129,15 @@ public class LoginActivity extends AppCompatActivity {
     private class SignInCallback implements Callback {
         @Override
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
-            throw new RuntimeException(e);
+            runOnUiThread(() -> {
+                Toast toast = new Toast(LoginActivity.this);
+                toast.setText("No internet connection");
+                toast.show();
+            });
         }
 
         @Override
-        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+        public void onResponse(@NonNull Call call, @NonNull Response response)  {
             int code = response.code();
 
             if (code != 200) {
@@ -147,11 +167,15 @@ public class LoginActivity extends AppCompatActivity {
     private class LoginCallback implements Callback {
         @Override
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
-            throw new RuntimeException(e);
+            runOnUiThread(() -> {
+                Toast toast = new Toast(LoginActivity.this);
+                toast.setText("No internet connection");
+                toast.show();
+            });
         }
 
         @Override
-        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+        public void onResponse(@NonNull Call call, @NonNull Response response) {
             int code = response.code();
 
             if (code != 200) {

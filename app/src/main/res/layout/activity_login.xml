@@ -7,14 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
-    <Button
-        android:id="@+id/btLoginConnection"
+    <View
+        android:id="@+id/vConnectionIndicator"
         android:layout_width="20dp"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
+        android:layout_margin="3dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="#FF0000"
-        android:layout_margin="3dp"
         />
 
     <LinearLayout

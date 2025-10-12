@@ -4,8 +4,12 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,12 +21,22 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.OutputStream;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class AsciiSettingsActivity extends AppCompatActivity {
 
@@ -44,6 +58,8 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_ascii);
+
+        handleConnectionIndicatorColor();
 
         needsReset = new MutableLiveData<>(false);
         initVars();
@@ -115,39 +131,150 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     private class OnSaveImageButtonClick implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Bitmap out = avAscii.getAsciiAsBitmap();
+            Bitmap asciiAsBitmap = avAscii.getAsciiAsBitmap();
+            CharactersColorsArray chcArray = avAscii.getChcAscii();
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
-            alert.setMessage("Put the name of the file");
+            AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext())
+                    .setCancelable(true)
+                    .setMessage("Put the name of the file");
 
             EditText etFileName = new EditText(view.getContext());
+            etFileName.setHint("File name");
             alert.setView(etFileName);
 
-            alert.setPositiveButton("OK", (dialog, which) -> {
-                String fileName = etFileName.getText().toString();
+            // Add buttons (empty for now)
+            alert.setNeutralButton("Save", null);
+            alert.setPositiveButton("Send", null);
+            alert.setNegativeButton("Send&Save", null);
 
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DISPLAY_NAME, "ascii_" + fileName + ".png");
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
-                ContentResolver resolver = getContentResolver();
+            AlertDialog dialog = alert.create();
 
-                Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            dialog.setOnShowListener(dialogInterface -> {
+                Button saveBtn = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                Button sendBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button sendSaveBtn = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
 
-                try {
-                    OutputStream outStream = resolver.openOutputStream(uri);
-                    out.compress(Bitmap.CompressFormat.PNG, 75, outStream);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                saveBtn.setOnClickListener(v -> {
+                    String fileName = etFileName.getText().toString().trim();
+                    if (fileName.isEmpty()) {
+                        etFileName.setError("Can't be empty");
+                        return;
+                    }
+                    saveLocaly(fileName, asciiAsBitmap);
+                    startMainActivity();
+                    dialog.dismiss();
+                });
 
-                Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);
-                startActivity(intent);
+                sendBtn.setOnClickListener(v -> {
+                    String artName = etFileName.getText().toString().trim();
+                    if (artName.isEmpty()) {
+                        etFileName.setError("Can't be empty");
+                        return;
+                    }
+
+                    String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
+                    int width = chcArray.getWidth();
+                    int height = chcArray.getHeight();
+                    char[] rawLetters = chcArray.getCharacters();
+                    int[] rawColors = chcArray.getColors();
+
+                    sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
+                    dialog.dismiss();
+                });
+
+                sendSaveBtn.setOnClickListener(v -> {
+                    String artName = etFileName.getText().toString().trim();
+                    if (artName.isEmpty()) {
+                        etFileName.setError("Can't be empty");
+                        return;
+                    }
+
+                    String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
+                    int width = chcArray.getWidth();
+                    int height = chcArray.getHeight();
+                    char[] rawLetters = chcArray.getCharacters();
+                    int[] rawColors = chcArray.getColors();
+
+                    saveLocaly(artName, asciiAsBitmap);
+                    sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
+                    dialog.dismiss();
+                });
             });
 
-            alert.setNegativeButton("Cancel", null);
+            dialog.show();
 
-            alert.show();
         }
+
+        private void sendToOnlineGallery(String author, String artName, int width, int heigth, char[] rawLetters, int[] rawColors) {
+
+            JSONObject json = new JSONObject();
+
+            JSONArray letters = new JSONArray();
+            for (char letter : rawLetters) {
+                letters.put(String.valueOf(letter));
+            }
+
+            JSONArray colors = new JSONArray();
+            for (int color : rawColors) {
+                colors.put(color);
+            }
+
+
+            try {
+                json.put("author", author);
+                json.put("artName", artName);
+                json.put("width", width);
+                json.put("height", heigth);
+                json.put("letters", letters);
+                json.put("colors", colors);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            ServerUtils.post(json.toString(), "add_image", new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    runOnUiThread(() -> {
+                        Toast toast = new Toast(AsciiSettingsActivity.this);
+                        toast.setText("Something went wrong ");
+                        toast.show();
+                    });
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        runOnUiThread(() -> {
+                            Toast toast = new Toast(AsciiSettingsActivity.this);
+                            toast.setText("Image send successfully");
+                            toast.show();
+                        });
+                        startMainActivity();
+                    }
+                }
+            });
+        }
+        private void saveLocaly(String fileName, Bitmap bmp) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, "ascii_" + fileName + ".png");
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+            ContentResolver resolver = getContentResolver();
+
+            Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+            try {
+                OutputStream outStream = resolver.openOutputStream(uri);
+                bmp.compress(Bitmap.CompressFormat.PNG, 75, outStream);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private class OnCharsetChange implements TextWatcher {
@@ -221,5 +348,30 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
         }
+    }
+
+    private void handleConnectionIndicatorColor() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        View indicator = findViewById(R.id.vConnectionIndicator);
+
+        Runnable connectionCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                new Thread(() -> {
+                    boolean isOnline = ServerUtils.isOnline();
+                    GradientDrawable i = new GradientDrawable();
+
+                    runOnUiThread(() -> {
+                        i.setColor(isOnline ? Color.GREEN : Color.RED);
+                        indicator.setBackground(i);
+                    });
+                }).start();
+
+                // Repeat every 5 seconds
+                handler.postDelayed(this, 500);
+            }
+        };
+
+        handler.post(connectionCheckRunnable);
     }
 }

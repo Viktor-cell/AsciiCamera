@@ -3,11 +3,15 @@ package com.example.ascii_camera;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -44,12 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btMenu).setOnClickListener(new onMenuClick());
 
-
         mldPhotoUri = new MutableLiveData<>();
         mldPhotoUri.observe(this, new isPhotoTakenObserver());
 
         View localGallery = createLocalGallery(Gallery.findAll(this, "ascii_"));
-        ConstraintLayout layout = findViewById(R.id.layout);
+        FrameLayout layout = findViewById(R.id.flGallery);
         layout.addView(localGallery);
 
         Log.d("USER_", Utils.getStringFromPrefs("name", this).trim());
@@ -86,19 +89,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleConnectionIndicatorColor() {
-        Button btn = findViewById(R.id.btMainConnection);
-        Runnable rUpdateConnectionIndicator = new Runnable() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        View indicator = findViewById(R.id.vConnectionIndicator);
+
+        Runnable connectionCheckRunnable = new Runnable() {
             @Override
             public void run() {
-                boolean isOnline = ServerUtils.isOnline();
+                new Thread(() -> {
+                    boolean isOnline = ServerUtils.isOnline();
+                    GradientDrawable i = new GradientDrawable();
 
-                btn.setBackgroundTintList(isOnline ? ColorStateList.valueOf(Color.GREEN) : ColorStateList.valueOf(Color.RED));
+                    runOnUiThread(() -> {
+                        i.setColor(isOnline ? Color.GREEN : Color.RED);
+                        indicator.setBackground(i);
+                    });
+                }).start();
+
+                // Repeat every 5 seconds
+                handler.postDelayed(this, 500);
             }
         };
-        new Thread(rUpdateConnectionIndicator).start();
-        btn.setOnClickListener(view -> {
-            new Thread(rUpdateConnectionIndicator).start();
-        });
+
+        handler.post(connectionCheckRunnable);
     }
 
     View createLocalGallery(ArrayList<Uri> images) {

@@ -67,6 +67,14 @@ public class CharactersColorsArray implements Parcelable {
                 '}';
     }
 
+    public int[] getColors() {
+        return colors;
+    }
+
+    public char[] getCharacters() {
+        return characters;
+    }
+
     int getColor(int x, int y) {
         return colors[y * width + x];
     }

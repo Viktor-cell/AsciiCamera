@@ -28,13 +28,13 @@ public class ServerUtils {
                 .url(SERVER_URL)
                 .build();
 
-        Response response;
-        try {
-            response = client.newCall(request).execute();
+        try (Response response = client.newCall(request).execute()) {
+            Log.e("ServerUtils", "Response code " + response.code());
+            return response.isSuccessful();
         } catch (Exception e) {
+            Log.e("ServerUtils", "isOnline error: " + e.getMessage(), e);
             return false;
         }
-
-        return response.isSuccessful();
     }
+
 }

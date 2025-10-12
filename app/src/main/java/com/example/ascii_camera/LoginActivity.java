@@ -3,7 +3,10 @@ package com.example.ascii_camera;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -50,16 +53,28 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleConnectionIndicatorColor() {
-        Button btn = findViewById(R.id.btLoginConnection);
-        Runnable rUpdateConnectionIndicator = () -> {
-            boolean isOnline = ServerUtils.isOnline();
+        Handler handler = new Handler(Looper.getMainLooper());
+        View indicator = findViewById(R.id.vConnectionIndicator);
 
-            btn.setBackgroundTintList(isOnline ? ColorStateList.valueOf(Color.GREEN) : ColorStateList.valueOf(Color.RED));
+        Runnable connectionCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                new Thread(() -> {
+                    boolean isOnline = ServerUtils.isOnline();
+                    GradientDrawable i = new GradientDrawable();
+
+                    runOnUiThread(() -> {
+                        i.setColor(isOnline ? Color.GREEN : Color.RED);
+                        indicator.setBackground(i);
+                    });
+                }).start();
+
+                // Repeat every 5 seconds
+                handler.postDelayed(this, 500);
+            }
         };
-        new Thread(rUpdateConnectionIndicator).start();
-        btn.setOnClickListener(view -> {
-            new Thread(rUpdateConnectionIndicator).start();
-        });
+
+        handler.post(connectionCheckRunnable);
     }
 
     private void initVars() {
@@ -88,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d("USER_", "pswd hash: " + passwordHash);
 
-        //TODO add server connection
         JSONObject json = new JSONObject();
 
         try {
@@ -131,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
             runOnUiThread(() -> {
                 Toast toast = new Toast(LoginActivity.this);
-                toast.setText("No internet connection");
+                toast.setText("Something went wrong ");
                 toast.show();
             });
         }
@@ -169,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
             runOnUiThread(() -> {
                 Toast toast = new Toast(LoginActivity.this);
-                toast.setText("No internet connection");
+                toast.setText("Something went wrong");
                 toast.show();
             });
         }

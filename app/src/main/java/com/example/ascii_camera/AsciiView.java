@@ -75,6 +75,10 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
         }
     }
 
+    public CharactersColorsArray getChcAscii() {
+        return chcAscii;
+    }
+
     public Bitmap getAsciiAsBitmap() {
 
         Bitmap out = Bitmap.createBitmap(

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         Utils.getPermissions(this, this);
         Utils.createTmpFolder(this, "tmpImageDir");
-        Utils.showContentOfTmpFolder(this, "tmpImageDir");
         Utils.cleanTmpFolder(this, "tmpImageDir");
 
         findViewById(R.id.btMenu).setOnClickListener(new onMenuClick());
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout layout = findViewById(R.id.flGallery);
         layout.addView(localGallery);
 
-        Log.d("USER_", Utils.getStringFromPrefs("name", this).trim());
+        
     }
 
     private void initUser() {
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         String name = Utils.getStringFromPrefs("name", this);
 
         tv.setText(name);
-        Log.d("USER_LOGIN_", name);
+        
 
 
         if (!name.equals(Utils.LOGGED_OUT_USERNAME)) {
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         public void onChanged(Uri uri) {
             Intent intent = new Intent(MainActivity.this, AsciiSettingsActivity.class);
             Ascii ascii = new Ascii(uri, AsciiSettings.defaultValues());
-            Log.d("main_activity", ascii.toString());
+            
             intent.putExtra("Ascii", ascii);
             startActivity(intent);
         }
@@ -140,10 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
         private final ActivityResultLauncher<PickVisualMediaRequest> pickPhotoLauncher =
                 registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                    if (uri == null) {
-                        Log.d("Photo", "empty mldPhotoUri, photo selection failed");
-                    } else {
-                        Log.d("Photo", "mldPhotoUri: " + uri);
+                    if (uri != null) {
                         mldPhotoUri.setValue(uri);
                     }
                 });
@@ -153,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 registerForActivityResult(new ActivityResultContracts.TakePicture(), did -> {
                     if (did) {
                         mldPhotoUri.setValue(uri);
-                        Log.d("DIR_", "created new temp file:" + uri.getPath());
+                        
                     }
                 });
 

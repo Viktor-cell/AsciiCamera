@@ -28,29 +28,11 @@ public class Utils {
 
     public static void cleanTmpFolder(Context ctx, String name) {
         File dir = new File(ctx.getCacheDir() + "/" + name);
-        if (!dir.exists()) {
-            Log.d("DIR_", "dir doesnt exists, cant remove anything");
-            return;
-        } else if (dir.listFiles().length == 0) {
-            Log.d("DIR_", "empty dir, cant remove anything");
+        if (!dir.exists() || dir.listFiles().length == 0) {
             return;
         }
         for (File file : dir.listFiles()) {
             file.delete();
-        }
-    }
-
-    public static void showContentOfTmpFolder(Context ctx, String name) {
-        File dir = new File(ctx.getCacheDir() + "/" + name);
-        if (!dir.exists()) {
-            Log.d("DIR_", "dir doesnt exists, cant show anything");
-            return;
-        } else if (dir.listFiles().length == 0) {
-            Log.d("DIR_", "empty dir, cant show anything");
-            return;
-        }
-        for (File file : dir.listFiles()) {
-            Log.d("DIR_", file.toString());
         }
     }
 

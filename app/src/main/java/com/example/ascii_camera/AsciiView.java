@@ -38,7 +38,7 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
             return;
         }
 
-        Log.d("ascii_view", chcAscii.toString());
+        
 
         float textSize = calculateTextSize();
         paint.setTextSize(textSize);
@@ -47,7 +47,7 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
         float startX = (getWidth() - chcAscii.getWidth() * textSize) / 2;
         float step = textSize;
 
-        Log.d("ascii_view", "startX: " + startX + " startY: " + startY);
+        
 
 
         for (int y = 0; y < chcAscii.getHeight(); y++) {

@@ -84,7 +84,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         holder.tv.setText(uriPath.substring(6, uriPath.length() - 4));
         holder.btnTrash.setOnClickListener(view -> {
             File f = new File(uri.getPath());
-            Log.d("FILE_DEL_", "f exists = " + f.exists() + ", path = " + f.getPath());
+            
             f.delete();
             imageUris.remove(position);
             notifyItemRemoved(position);

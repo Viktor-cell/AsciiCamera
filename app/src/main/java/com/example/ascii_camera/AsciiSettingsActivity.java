@@ -128,6 +128,36 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         avAscii.redraw();
     }
 
+    private void startMainActivity() {
+        Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void handleConnectionIndicatorColor() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        View indicator = findViewById(R.id.vConnectionIndicator);
+
+        Runnable connectionCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                new Thread(() -> {
+                    boolean isOnline = ServerUtils.isOnline();
+                    GradientDrawable i = new GradientDrawable();
+
+                    runOnUiThread(() -> {
+                        i.setColor(isOnline ? Color.GREEN : Color.RED);
+                        indicator.setBackground(i);
+                    });
+                }).start();
+
+                // Repeat every 5 seconds
+                handler.postDelayed(this, 500);
+            }
+        };
+
+        handler.post(connectionCheckRunnable);
+    }
+
     private class OnSaveImageButtonClick implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -254,6 +284,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 }
             });
         }
+
         private void saveLocaly(String fileName, Bitmap bmp) {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.DISPLAY_NAME, "ascii_" + fileName + ".png");
@@ -270,11 +301,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
             }
 
         }
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);
-        startActivity(intent);
     }
 
     private class OnCharsetChange implements TextWatcher {
@@ -348,30 +374,5 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
         }
-    }
-
-    private void handleConnectionIndicatorColor() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        View indicator = findViewById(R.id.vConnectionIndicator);
-
-        Runnable connectionCheckRunnable = new Runnable() {
-            @Override
-            public void run() {
-                new Thread(() -> {
-                    boolean isOnline = ServerUtils.isOnline();
-                    GradientDrawable i = new GradientDrawable();
-
-                    runOnUiThread(() -> {
-                        i.setColor(isOnline ? Color.GREEN : Color.RED);
-                        indicator.setBackground(i);
-                    });
-                }).start();
-
-                // Repeat every 5 seconds
-                handler.postDelayed(this, 500);
-            }
-        };
-
-        handler.post(connectionCheckRunnable);
     }
 }

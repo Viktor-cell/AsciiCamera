@@ -25,19 +25,17 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
-
     Button btLogin;
     Button btSignUp;
     EditText etName;
     EditText etPassword;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Log.d("USER_", Utils.getStringFromPrefs("name", this).trim());
+
 
         if (!Utils.getStringFromPrefs("name", this).trim().isEmpty() && !Utils.getStringFromPrefs("name", this).equals(Utils.LOGGED_OUT_USERNAME)) {
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
@@ -48,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         initVars();
 
         btLogin.setOnClickListener(new HandleLogin());
-        btSignUp.setOnClickListener(new HandleSingIn());
+        btSignUp.setOnClickListener(new HandleSingUp()  );
 
     }
 
@@ -69,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
                     });
                 }).start();
 
-                // Repeat every 5 seconds
                 handler.postDelayed(this, 500);
             }
         };
@@ -101,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         String name = etName.getText().toString().trim();
         String passwordHash = Utils.hash(etPassword.getText().toString().trim());
 
-        Log.d("USER_", "pswd hash: " + passwordHash);
+
 
         JSONObject json = new JSONObject();
 
@@ -115,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         return json;
     }
 
-    private class HandleSingIn implements View.OnClickListener {
+    private class HandleSingUp implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             if (checkNameAndPassword()) {
@@ -123,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             JSONObject json = createJsonFromEditTexts();
-            ServerUtils.post(json.toString(), "sign_in", new SignInCallback());
+            ServerUtils.post(json.toString(), "sign_up", new SignInCallback());
 
         }
     }
@@ -136,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             JSONObject json = createJsonFromEditTexts();
-            ServerUtils.post(json.toString(), "login", new LoginCallback());
+            ServerUtils.post(json.toString(), "log_in", new LoginCallback());
         }
     }
 

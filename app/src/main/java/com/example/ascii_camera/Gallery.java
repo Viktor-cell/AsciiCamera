@@ -23,11 +23,7 @@ public class Gallery {
 
         Cursor cursor = contentResolver.query(where, what, null, null, null);
 
-        if (cursor == null) {
-            Log.d("GALLERY_", "cursor == null");
-        } else if (!cursor.moveToFirst()) {
-            Log.d("GALLERY_", "!cursor.moveToFirst()");
-        } else {
+        if (cursor != null && cursor.moveToFirst()) {
             int titleColumn = cursor.getColumnIndex(MediaStore.Images.Media.TITLE);
             int fullPathColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
 
@@ -40,7 +36,6 @@ public class Gallery {
                 }
             } while (cursor.moveToNext());
         }
-        Log.d("GALLERY_", "found: " + uris.size());
         return uris;
     }
 }

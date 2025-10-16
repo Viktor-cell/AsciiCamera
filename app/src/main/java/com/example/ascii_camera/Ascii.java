@@ -50,7 +50,6 @@ public class Ascii implements Parcelable {
         return 0;
     }
 
-    // Getters and setters
     public Bitmap getBmpOriginal() {
         return bmpOriginal;
     }
@@ -92,10 +91,8 @@ public class Ascii implements Parcelable {
 
         try (InputStream inputStream = context.getContentResolver().openInputStream(uriBmp)) {
             bmpOriginal = BitmapFactory.decodeStream(inputStream);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Bitmap Uri not found", e);
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding bitmap", e);
+            throw new RuntimeException(e);
         }
 
         createBmpScaled();
@@ -150,46 +147,42 @@ public class Ascii implements Parcelable {
                 {-1, -2, -1}
         };
 
-        double magX, magY;
         float minMag = settings.getMinMag();
+        float minMagSquared = minMag * minMag;
+
         int height = bmpScaled.getHeight();
         int width = bmpScaled.getWidth();
         int[] pixels = new int[width * height];
         bmpScaled.getPixels(pixels, 0, width, 0, 0, width, height);
 
-        for (int y = 1; y < height - 2; y++) {
-            for (int x = 1; x < width - 2; x++) {
-                magX = 0;
-                magY = 0;
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                double magX = 0;
+                double magY = 0;
 
-                for (int kx = 0; kx < 3; kx++) {
-                    for (int ky = 0; ky < 3; ky++) {
-                        int currentPixel = pixels[(y + ky) * width + x + kx];
+                for (int ky = -1; ky <= 1; ky++) {
+                    for (int kx = -1; kx <= 1; kx++) {
+                        int pixelColor = pixels[(y + ky) * width + (x + kx)];
+                        int lightness = calculateLightness(pixelColor);
 
-                        int r = (currentPixel >> 16) & 0xff;
-                        int g = (currentPixel >> 8) & 0xff;
-                        int b = currentPixel & 0xff;
+                        int weightGx = kernelGx[ky + 1][kx + 1];
+                        int weightGy = kernelGy[ky + 1][kx + 1];
 
-                        int valGx = kernelGx[ky][kx];
-                        int valGy = kernelGy[ky][kx];
-
-                        magX += r * valGx;
-                        magY += r * valGy;
-
-                        magX += g * valGx;
-                        magY += g * valGy;
-
-                        magX += b * valGx;
-                        magY += b * valGy;
+                        magX += lightness * weightGx;
+                        magY += lightness * weightGy;
                     }
                 }
 
-                if (magX * magX + magY * magY > minMag * minMag) {
-                    chcArray.setCharacter(x, y, getEdgeCharacter(magX, magY));
+                double magnitudeSquared = magX * magX + magY * magY;
+
+                if (magnitudeSquared > minMagSquared) {
+                    char edgeChar = getEdgeCharacter(magX, magY);
+                    chcArray.setCharacter(x, y, edgeChar);
                 }
             }
         }
     }
+
 
     private int calculateLightness(int pixel) {
         int r = Color.red(pixel);

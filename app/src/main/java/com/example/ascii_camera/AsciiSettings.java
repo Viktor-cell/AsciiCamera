@@ -24,7 +24,7 @@ public class AsciiSettings implements Parcelable {
     private static final int DEFAULT_MIN_MAG = 400;
 
     private String charset;
-    private int fontSize; // How many pixels in one letter
+    private int fontSize; // How many pixels for one letter
     private boolean monochrome;
     private boolean edges;
     private int minMag;

@@ -1,14 +1,12 @@
 package com.example.ascii_camera;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -19,7 +17,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -80,9 +77,7 @@ public class MainActivity extends AppCompatActivity {
             });
         } else if (name.equals(Utils.LOGGED_OUT_USERNAME)) {
             btn.setText("Log in");
-            btn.setOnClickListener(view -> {
-                startActivity(new Intent(this, LoginActivity.class));
-            });
+            btn.setOnClickListener(view -> startActivity(new Intent(this, LoginActivity.class)));
         }
 
     }
@@ -104,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }).start();
 
-                // Repeat every 5 seconds
                 handler.postDelayed(this, 500);
             }
         };
@@ -113,14 +107,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     View createLocalGallery(ArrayList<Uri> images) {
-        if (images.size() == 0) {
+        if (images.isEmpty()) {
             TextView tv = new TextView(MainActivity.this);
             tv.setText("No image found");
             return tv;
         }
         RecyclerView rvGallery = new RecyclerView(this);
         rvGallery.setLayoutManager(new GridLayoutManager(this, 2));
-        rvGallery.setAdapter(new GalleryAdapter(images));
+        rvGallery.setAdapter(new LocalGalleryAdapter(images));
 
         return rvGallery;
     }

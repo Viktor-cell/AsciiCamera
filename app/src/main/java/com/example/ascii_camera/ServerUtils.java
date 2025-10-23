@@ -10,7 +10,7 @@ import java.net.URL;
 
 import okhttp3.*;
 public class ServerUtils {
-    private static final String SERVER_URL = "http://10.213.213.81:8080";
+    private static final String SERVER_URL = "http://10.247.189.81:8080";
 
     public static void post(String json, String endpoint, Callback callback) {
         OkHttpClient client = new OkHttpClient();

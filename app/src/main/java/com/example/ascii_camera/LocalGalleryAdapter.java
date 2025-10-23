@@ -1,11 +1,10 @@
 package com.example.ascii_camera;
 
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +14,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
+public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapter.GalleryViewHolder> {
     ArrayList<Uri> imageUris;
 
     @NonNull
     @Override
-    public GalleryAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public LocalGalleryAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ImageView img = new ImageView(parent.getContext());
         TextView tv = new TextView(parent.getContext());
         Button btnTrash = new Button(parent.getContext());
@@ -77,7 +77,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GalleryAdapter.GalleryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LocalGalleryAdapter.GalleryViewHolder holder, int position) {
         Uri uri = imageUris.get(position);
         String uriPath = uri.getLastPathSegment();
         holder.img.setImageURI(uri);
@@ -89,6 +89,19 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             imageUris.remove(position);
             notifyItemRemoved(position);
         });
+
+        holder.img.setOnClickListener(view -> {
+            AlertDialog alert = new AlertDialog.Builder(holder.ctx)
+                    .setCancelable(true)
+                    .setMessage(holder.tv.getText())
+                    .create();
+
+            ImageView img = new ImageView(holder.ctx);
+            img.setImageURI(imageUris.get(position));
+            alert.setView(img);
+            alert.show();
+            alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        });
     }
 
     @Override
@@ -96,7 +109,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         return imageUris.size();
     }
 
-    public GalleryAdapter(ArrayList<Uri> imageUris) {
+    public LocalGalleryAdapter(ArrayList<Uri> imageUris) {
         this.imageUris = imageUris;
     }
 
@@ -105,7 +118,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         TextView tv;
         Button btnTrash;
         LinearLayout llTextAndButton;
-
         Context ctx;
 
         public GalleryViewHolder(@NonNull View itemView, LinearLayout llTextAndButton, ImageView img, TextView tv, Button btnTrash, Context ctx) {

@@ -172,7 +172,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
             etFileName.setHint("File name");
             alert.setView(etFileName);
 
-            // Add buttons (empty for now)
             alert.setNeutralButton("Save", null);
             alert.setPositiveButton("Send", null);
             alert.setNegativeButton("Send&Save", null);

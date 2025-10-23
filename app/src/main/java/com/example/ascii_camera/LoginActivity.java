@@ -35,8 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-
         if (!Utils.getStringFromPrefs("name", this).trim().isEmpty() && !Utils.getStringFromPrefs("name", this).equals(Utils.LOGGED_OUT_USERNAME)) {
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
@@ -46,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         initVars();
 
         btLogin.setOnClickListener(new HandleLogin());
-        btSignUp.setOnClickListener(new HandleSingUp()  );
+        btSignUp.setOnClickListener(new HandleSingUp());
 
     }
 

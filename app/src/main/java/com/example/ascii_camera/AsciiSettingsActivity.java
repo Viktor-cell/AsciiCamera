@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -161,77 +162,83 @@ public class AsciiSettingsActivity extends AppCompatActivity {
     private class OnSaveImageButtonClick implements View.OnClickListener {
         @Override
         public void onClick(View view) {
+            View customDialog = getLayoutInflater().inflate(R.layout.asci_settings_dialog, null);
+
             Bitmap asciiAsBitmap = avAscii.getAsciiAsBitmap();
             CharactersColorsArray chcArray = avAscii.getChcAscii();
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext())
+            AlertDialog alert = new AlertDialog.Builder(AsciiSettingsActivity.this)
+                    .setMessage("Put the name of a art")
                     .setCancelable(true)
-                    .setMessage("Put the name of the file");
+                    .setView(customDialog)
+                    .create();
 
-            EditText etFileName = new EditText(view.getContext());
-            etFileName.setHint("File name");
-            alert.setView(etFileName);
+            EditText etFileName = customDialog.findViewById(R.id.etFileName);
+            Button save = customDialog.findViewById(R.id.btSave);
+            Button send = customDialog.findViewById(R.id.btSend);
+            Button sendAndSave = customDialog.findViewById(R.id.btSendAndSave);
 
-            alert.setNeutralButton("Save", null);
-            alert.setPositiveButton("Send", null);
-            alert.setNegativeButton("Send&Save", null);
-
-            AlertDialog dialog = alert.create();
-
-            dialog.setOnShowListener(dialogInterface -> {
-                Button saveBtn = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                Button sendBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                Button sendSaveBtn = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-                saveBtn.setOnClickListener(v -> {
-                    String fileName = etFileName.getText().toString().trim();
-                    if (fileName.isEmpty()) {
-                        etFileName.setError("Can't be empty");
-                        return;
-                    }
-                    saveLocaly(fileName, asciiAsBitmap);
-                    startMainActivity();
-                    dialog.dismiss();
-                });
-
-                sendBtn.setOnClickListener(v -> {
-                    String artName = etFileName.getText().toString().trim();
-                    if (artName.isEmpty()) {
-                        etFileName.setError("Can't be empty");
-                        return;
-                    }
-
-                    String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
-                    int width = chcArray.getWidth();
-                    int height = chcArray.getHeight();
-                    char[] rawLetters = chcArray.getCharacters();
-                    int[] rawColors = chcArray.getColors();
-
-                    sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
-                    dialog.dismiss();
-                });
-
-                sendSaveBtn.setOnClickListener(v -> {
-                    String artName = etFileName.getText().toString().trim();
-                    if (artName.isEmpty()) {
-                        etFileName.setError("Can't be empty");
-                        return;
-                    }
-
-                    String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
-                    int width = chcArray.getWidth();
-                    int height = chcArray.getHeight();
-                    char[] rawLetters = chcArray.getCharacters();
-                    int[] rawColors = chcArray.getColors();
-
-                    saveLocaly(artName, asciiAsBitmap);
-                    sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
-                    dialog.dismiss();
-                });
+            save.setOnClickListener(v -> {
+                String fileName = etFileName.getText().toString().trim();
+                if (fileName.isEmpty()) {
+                    etFileName.setError("Can't be empty");
+                    return;
+                }
+                saveLocaly(fileName, asciiAsBitmap);
+                startMainActivity();
+                alert.dismiss();
             });
 
-            dialog.show();
+            send.setOnClickListener(v -> {
+                if (!ServerUtils.isOnline()) {
+                    Toast t = new Toast(customDialog.getContext());
+                    t.setText("No internet connection");
+                    t.show();
+                    return;
+                }
 
+                String artName = etFileName.getText().toString().trim();
+                if (artName.isEmpty()) {
+                    etFileName.setError("Can't be empty");
+                    return;
+                }
+
+                String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
+                int width = chcArray.getWidth();
+                int height = chcArray.getHeight();
+                char[] rawLetters = chcArray.getCharacters();
+                int[] rawColors = chcArray.getColors();
+
+                sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
+                alert.dismiss();
+            });
+
+            sendAndSave.setOnClickListener(v -> {
+                if (!ServerUtils.isOnline()) {
+                    Toast t = new Toast(customDialog.getContext());
+                    t.setText("No internet connection");
+                    t.show();
+                    return;
+                }
+
+                String artName = etFileName.getText().toString().trim();
+                if (artName.isEmpty()) {
+                    etFileName.setError("Can't be empty");
+                    return;
+                }
+
+                String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
+                int width = chcArray.getWidth();
+                int height = chcArray.getHeight();
+                char[] rawLetters = chcArray.getCharacters();
+                int[] rawColors = chcArray.getColors();
+
+                saveLocaly(artName, asciiAsBitmap);
+                sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
+                alert.dismiss();
+            });
+
+            alert.show();
         }
 
         private void sendToOnlineGallery(String author, String artName, int width, int heigth, char[] rawLetters, int[] rawColors) {

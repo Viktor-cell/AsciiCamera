@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.*;
 public class ServerUtils {
@@ -23,7 +24,9 @@ public class ServerUtils {
     }
 
     public static boolean isOnline() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .callTimeout(1, TimeUnit.SECONDS)
+                .build();
         Request request = new Request.Builder()
                 .url(SERVER_URL)
                 .build();

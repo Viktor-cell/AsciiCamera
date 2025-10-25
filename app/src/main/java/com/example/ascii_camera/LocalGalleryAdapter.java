@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -91,14 +92,24 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
         });
 
         holder.img.setOnClickListener(view -> {
+            LayoutInflater inflater = LayoutInflater.from(holder.ctx);
+
+            View customDialog = inflater.inflate(R.layout.image_preview_main_activity_dialog, null);
+
+            ImageView img = customDialog.findViewById(R.id.imgPreview);
+            Button bt = customDialog.findViewById(R.id.btClose);
+
             AlertDialog alert = new AlertDialog.Builder(holder.ctx)
                     .setCancelable(true)
                     .setMessage(holder.tv.getText())
+                    .setView(customDialog)
                     .create();
 
-            ImageView img = new ImageView(holder.ctx);
+            bt.setOnClickListener(v -> {
+                alert.dismiss();
+            });
+
             img.setImageURI(imageUris.get(position));
-            alert.setView(img);
             alert.show();
             alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         });

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.MutableLiveData;
@@ -26,8 +29,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.util.ArrayList;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+import okio.ByteString;
+
+
+
+
+
 public class MainActivity extends AppCompatActivity {
     private MutableLiveData<Uri> mldPhotoUri;
+    private WebsocetClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +66,17 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout layout = findViewById(R.id.flGallery);
         layout.addView(localGallery);
 
-        
+        client = new WebsocetClient();
+        client.start();
+        /*
+        client.sendMessage("Ahojte", msg -> {
+            Log.d("MAMAM", "runned the 1st callback, msg: " + msg);
+        });
+
+        client.sendMessage("Matky kladny", msg -> {
+            Log.d("MAMAM", "runned the 2nd callback, msg: " + msg);
+        });
+        */
     }
 
     private void initUser() {

@@ -11,7 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.*;
 public class ServerUtils {
-    private static final String SERVER_URL = "http://10.247.189.81:8080";
+
+    public static final String SERVER_SOCKET = "10.247.189.81:8080";
+    public static final String SERVER_URL = "http://" + SERVER_SOCKET;
 
     public static void post(String json, String endpoint, Callback callback) {
         OkHttpClient client = new OkHttpClient();

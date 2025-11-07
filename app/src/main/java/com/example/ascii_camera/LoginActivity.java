@@ -96,8 +96,6 @@ public class LoginActivity extends AppCompatActivity {
         String name = etName.getText().toString().trim();
         String passwordHash = Utils.hash(etPassword.getText().toString().trim());
 
-
-
         JSONObject json = new JSONObject();
 
         try {

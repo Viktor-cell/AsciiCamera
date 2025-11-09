@@ -28,7 +28,7 @@
         />
 
     <Button
-        android:text="Save and save"
+        android:text="Save and send"
         android:id="@+id/btSendAndSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

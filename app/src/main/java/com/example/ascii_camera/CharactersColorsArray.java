@@ -6,90 +6,96 @@ import android.os.Parcelable;
 import java.util.Arrays;
 
 public class CharactersColorsArray implements Parcelable {
-    public static final Creator<CharactersColorsArray> CREATOR = new Creator<CharactersColorsArray>() {
-        @Override
-        public CharactersColorsArray createFromParcel(Parcel in) {
-            return new CharactersColorsArray(in);
+        public static final Creator<CharactersColorsArray> CREATOR = new Creator<CharactersColorsArray>() {
+                @Override
+                public CharactersColorsArray createFromParcel(Parcel in) {
+                        return new CharactersColorsArray(in);
+                }
+
+                @Override
+                public CharactersColorsArray[] newArray(int size) {
+                        return new CharactersColorsArray[size];
+                }
+        };
+        private final char[] characters;
+        private final int[] colors; // argb format
+        private final int width;
+        private final int height;
+
+        public CharactersColorsArray(int width, int height) {
+                this.width = width;
+                this.height = height;
+                characters = new char[width * height];
+                colors = new int[width * height];
+        }
+
+        public CharactersColorsArray(int width, int height, int[] colors, char[] characters) {
+                this.width = width;
+                this.height = height;
+                this.colors = colors;
+                this.characters = characters;
+        }
+
+        protected CharactersColorsArray(Parcel in) {
+                characters = in.createCharArray();
+                colors = in.createIntArray();
+                width = in.readInt();
+                height = in.readInt();
+        }
+
+        public int getHeight() {
+                return height;
+        }
+
+        public int getWidth() {
+                return width;
+        }
+
+        void setCharacter(int x, int y, char c) {
+                characters[y * width + x] = c;
+        }
+
+        void setColor(int x, int y, int c) {
+                colors[y * width + x] = c;
+        }
+
+        char getCharacter(int x, int y) {
+                return characters[y * width + x];
         }
 
         @Override
-        public CharactersColorsArray[] newArray(int size) {
-            return new CharactersColorsArray[size];
+        public String toString() {
+                return "CharactersColorsArray{" +
+                        "characters=" + Arrays.toString(characters) +
+                        ", colors=" + Arrays.toString(colors) +
+                        ", width=" + width +
+                        ", height=" + height +
+                        '}';
         }
-    };
-    private final char[] characters;
-    private final int[] colors; // argb format
-    private final int width;
-    private final int height;
 
-    public CharactersColorsArray(int width, int height) {
-        this.width = width;
-        this.height = height;
-        characters = new char[width * height];
-        colors = new int[width * height];
+        public int[] getColors() {
+                return colors;
+        }
 
-    }
+        public char[] getCharacters() {
+                return characters;
+        }
 
-    protected CharactersColorsArray(Parcel in) {
-        characters = in.createCharArray();
-        colors = in.createIntArray();
-        width = in.readInt();
-        height = in.readInt();
-    }
+        int getColor(int x, int y) {
+                return colors[y * width + x];
+        }
 
-    public int getHeight() {
-        return height;
-    }
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+                dest.writeCharArray(characters);
+                dest.writeIntArray(colors);
+                dest.writeInt(width);
+                dest.writeInt(height);
+        }
 
-    public int getWidth() {
-        return width;
-    }
-
-    void setCharacter(int x, int y, char c) {
-        characters[y * width + x] = c;
-    }
-
-    void setColor(int x, int y, int c) {
-        colors[y * width + x] = c;
-    }
-
-    char getCharacter(int x, int y) {
-        return characters[y * width + x];
-    }
-
-    @Override
-    public String toString() {
-        return "CharactersColorsArray{" +
-                "characters=" + Arrays.toString(characters) +
-                ", colors=" + Arrays.toString(colors) +
-                ", width=" + width +
-                ", height=" + height +
-                '}';
-    }
-
-    public int[] getColors() {
-        return colors;
-    }
-
-    public char[] getCharacters() {
-        return characters;
-    }
-
-    int getColor(int x, int y) {
-        return colors[y * width + x];
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeCharArray(characters);
-        dest.writeIntArray(colors);
-        dest.writeInt(width);
-        dest.writeInt(height);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+        @Override
+        public int describeContents() {
+                return 0;
+        }
 
 }

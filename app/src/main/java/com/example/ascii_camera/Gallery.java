@@ -11,31 +11,31 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Gallery {
-    public static ArrayList<Uri> findAll(Context ctx, String prefix) {
-        ArrayList<Uri> uris = new ArrayList<>();
+        public static ArrayList<Uri> findAll(Context ctx, String prefix) {
+                ArrayList<Uri> uris = new ArrayList<>();
 
-        ContentResolver contentResolver = ctx.getContentResolver();
-        Uri where = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        String[] what = {
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.TITLE
-        };
+                ContentResolver contentResolver = ctx.getContentResolver();
+                Uri where = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                String[] what = {
+                        MediaStore.Images.Media.DATA,
+                        MediaStore.Images.Media.TITLE
+                };
 
-        Cursor cursor = contentResolver.query(where, what, null, null, null);
+                Cursor cursor = contentResolver.query(where, what, null, null, null);
 
-        if (cursor != null && cursor.moveToFirst()) {
-            int titleColumn = cursor.getColumnIndex(MediaStore.Images.Media.TITLE);
-            int fullPathColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                if (cursor != null && cursor.moveToFirst()) {
+                        int titleColumn = cursor.getColumnIndex(MediaStore.Images.Media.TITLE);
+                        int fullPathColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
 
-            do {
-                String thisTitle = cursor.getString(titleColumn);
-                String thisPath = cursor.getString(fullPathColumn);
+                        do {
+                                String thisTitle = cursor.getString(titleColumn);
+                                String thisPath = cursor.getString(fullPathColumn);
 
-                if (thisTitle.startsWith(prefix)) {
-                    uris.add(Uri.fromFile(new File(thisPath)));
+                                if (thisTitle.startsWith(prefix)) {
+                                        uris.add(Uri.fromFile(new File(thisPath)));
+                                }
+                        } while (cursor.moveToNext());
                 }
-            } while (cursor.moveToNext());
+                return uris;
         }
-        return uris;
-    }
 }

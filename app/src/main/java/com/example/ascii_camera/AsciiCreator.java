@@ -10,16 +10,16 @@ import android.os.Parcelable;
 
 import java.io.InputStream;
 
-public class Ascii implements Parcelable {
-        public static final Creator<Ascii> CREATOR = new Creator<>() {
+public class AsciiCreator implements Parcelable {
+        public static final Creator<AsciiCreator> CREATOR = new Creator<>() {
                 @Override
-                public Ascii createFromParcel(Parcel in) {
-                        return new Ascii(in);
+                public AsciiCreator createFromParcel(Parcel in) {
+                        return new AsciiCreator(in);
                 }
 
                 @Override
-                public Ascii[] newArray(int size) {
-                        return new Ascii[size];
+                public AsciiCreator[] newArray(int size) {
+                        return new AsciiCreator[size];
                 }
         };
         private final Uri uriBmp;
@@ -28,12 +28,12 @@ public class Ascii implements Parcelable {
         private CharactersColorsArray chcArray;
         private AsciiSettings settings;
 
-        public Ascii(Parcel in) {
+        public AsciiCreator(Parcel in) {
                 settings = in.readParcelable(AsciiSettings.class.getClassLoader());
                 uriBmp = in.readParcelable(Uri.class.getClassLoader());
         }
 
-        public Ascii(Uri uriBmp, AsciiSettings settings) {
+        public AsciiCreator(Uri uriBmp, AsciiSettings settings) {
                 this.uriBmp = uriBmp;
                 this.settings = settings;
         }
@@ -84,11 +84,10 @@ public class Ascii implements Parcelable {
         }
 
         public void initBmpIfNeeded(Context context) {
-                if (bmpOriginal != null) {
-                        return;
-                }
+                if (bmpOriginal != null) return;
 
-                try (InputStream inputStream = context.getContentResolver().openInputStream(uriBmp)) {
+                try {
+                        InputStream inputStream = context.getContentResolver().openInputStream(uriBmp);
                         bmpOriginal = BitmapFactory.decodeStream(inputStream);
                 } catch (Exception e) {
                         throw new RuntimeException(e);

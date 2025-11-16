@@ -5,13 +5,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +21,10 @@ import java.util.ArrayList;
 
 public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapter.GalleryViewHolder> {
         ArrayList<Uri> imageUris;
+
+        public LocalGalleryAdapter(ArrayList<Uri> imageUris) {
+                this.imageUris = imageUris;
+        }
 
         @NonNull
         @Override
@@ -76,10 +78,6 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
                 return imageUris.size();
         }
 
-        public LocalGalleryAdapter(ArrayList<Uri> imageUris) {
-                this.imageUris = imageUris;
-        }
-
         public static class GalleryViewHolder extends RecyclerView.ViewHolder {
                 ImageView img;
                 TextView tv;
@@ -87,7 +85,7 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
                 //LinearLayout llTextAndButton;
                 Context ctx;
 
-                public GalleryViewHolder(@NonNull View itemView,  Context ctx) {
+                public GalleryViewHolder(@NonNull View itemView, Context ctx) {
                         super(itemView);
                         this.img = itemView.findViewById(R.id.image);
                         this.tv = itemView.findViewById(R.id.text);

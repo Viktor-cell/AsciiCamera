@@ -4,24 +4,107 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.security.MessageDigest;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class Utils {
 
         public static final String LOGGED_OUT_USERNAME = "anonymous";
+        private static final String PREFS_LOCATION = "user_data";
+
+        public static void sendAsciiToOnlineGallery(FullAscii fullAscii, Context ctx, Activity act) {
+
+                JSONObject json = new JSONObject();
+
+                JSONArray letters = new JSONArray();
+                for (char letter : fullAscii.getChcArray().getCharacters()) {
+                        letters.put(String.valueOf(letter));
+                }
+
+                JSONArray colors = new JSONArray();
+                for (int color : fullAscii.getChcArray().getColors()) {
+                        colors.put(color);
+                }
+
+
+                try {
+                        json.put("author", fullAscii.getAuthor());
+                        json.put("artName", fullAscii.getArtName());
+                        json.put("width", fullAscii.getChcArray().getWidth());
+                        json.put("height", fullAscii.getChcArray().getHeight());
+                        json.put("letters", fullAscii.getChcArray().getCharacters());
+                        json.put("colors", fullAscii.getChcArray().getColors());
+                } catch (Exception e) {
+                        throw new RuntimeException(e);
+                }
+
+                ServerUtils.post(json.toString(), "add_image", new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                act.runOnUiThread(() -> {
+                                        Toast toast = new Toast(ctx);
+                                        toast.setText("Something went wrong ");
+                                        toast.show();
+                                });
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                if (response.isSuccessful()) {
+                                        act.runOnUiThread(() -> {
+                                                Toast toast = new Toast(ctx);
+                                                toast.setText("Image send successfully");
+                                                toast.show();
+                                        });
+                                        Intent intent = new Intent(ctx, MainActivity.class);
+                                        act.startActivity(intent);
+                                }
+                        }
+                });
+        }
+
+        public static void saveLocaly(String fileName, Bitmap bmp, Context ctx) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, "ascii_" + fileName + ".png");
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                ContentResolver resolver = ctx.getContentResolver();
+
+                Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+                try {
+                        OutputStream outStream = resolver.openOutputStream(uri);
+                        bmp.compress(Bitmap.CompressFormat.PNG, 75, outStream);
+                } catch (Exception e) {
+                        throw new RuntimeException(e);
+                }
+
+        }
 
         public static void createTmpFolder(Context ctx, String name) {
                 File dir = ctx.getCacheDir();
@@ -31,8 +114,10 @@ public class Utils {
 
         public static void cleanTmpFolder(Context ctx, String name) {
                 File dir = new File(ctx.getCacheDir() + "/" + name);
-                if (!dir.exists() || dir.listFiles().length == 0) {
+                if (!dir.exists()) {
                         return;
+                } else {
+                        dir.listFiles();
                 }
                 for (File file : dir.listFiles()) {
                         file.delete();
@@ -46,8 +131,6 @@ public class Utils {
                                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 }
         }
-
-        private static final String PREFS_LOCATION = "user_data";
 
         public static void addStringToPrefs(String key, String val, Context ctx) {
                 SharedPreferences sp = ctx.getSharedPreferences(PREFS_LOCATION, MODE_PRIVATE);

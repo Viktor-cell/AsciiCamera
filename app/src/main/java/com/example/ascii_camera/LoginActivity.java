@@ -1,13 +1,11 @@
 package com.example.ascii_camera;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -144,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response)  {
+                public void onResponse(@NonNull Call call, @NonNull Response response) {
                         int code = response.code();
 
                         if (code != 200) {
@@ -153,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 String body = response.body().string();
                                                 etName.setError(body);
                                                 etPassword.setError(body);
-                                        }catch (Exception e) {
+                                        } catch (Exception e) {
                                                 throw new RuntimeException(e);
                                         }
 
@@ -163,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         String name = etName.getText().toString().trim();
-                        Utils.addStringToPrefs("name", name,LoginActivity.this);
+                        Utils.addStringToPrefs("name", name, LoginActivity.this);
 
                         Intent it = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(it);
@@ -189,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
                                 runOnUiThread(() -> {
                                         try {
                                                 etName.setError(response.body().string());
-                                        }catch (Exception e) {
+                                        } catch (Exception e) {
                                                 throw new RuntimeException(e);
                                         }
 
@@ -199,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         String name = etName.getText().toString().trim();
-                        Utils.addStringToPrefs("name", name,LoginActivity.this);
+                        Utils.addStringToPrefs("name", name, LoginActivity.this);
 
                         Intent it = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(it);

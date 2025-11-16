@@ -1,19 +1,14 @@
 package com.example.ascii_camera;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,11 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.io.OutputStream;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -51,7 +42,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         private LinearLayout llSettingContainer;
         private TextView tvFontSize;
         private TextView tvMinMag;
-        private Ascii ascii;
+        private AsciiCreator asciiCreator;
         private AsciiView avAscii;
         private MutableLiveData<Boolean> needsReset;
 
@@ -65,16 +56,16 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 needsReset = new MutableLiveData<>(false);
                 initVars();
 
-                ascii = getIntent().getParcelableExtra("Ascii");
-                assert ascii != null;
-                ascii.initBmpIfNeeded(this);
+                asciiCreator = getIntent().getParcelableExtra("Ascii");
+                assert asciiCreator != null;
+                asciiCreator.initBmpIfNeeded(this);
 
                 setupListeners();
                 loadSettingsIntoViews();
 
                 needsReset.observe(this, does -> {
                         if (does) {
-                                ascii.setSettings(new AsciiSettings(
+                                asciiCreator.setSettings(new AsciiSettings(
                                         etCharset.getText().toString(),
                                         sbFontSize.getProgress(),
                                         chbMonochrome.isChecked(),
@@ -112,27 +103,23 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         }
 
         private void loadSettingsIntoViews() {
-                etCharset.setText(ascii.getSettings().getCharset());
-                sbFontSize.setProgress(ascii.getSettings().getFontSize());
-                sbMinMag.setProgress(ascii.getSettings().getMinMag());
-                chbEdges.setChecked(ascii.getSettings().isEdges());
-                chbMonochrome.setChecked(ascii.getSettings().isMonochrome());
+                etCharset.setText(asciiCreator.getSettings().getCharset());
+                sbFontSize.setProgress(asciiCreator.getSettings().getFontSize());
+                sbMinMag.setProgress(asciiCreator.getSettings().getMinMag());
+                chbEdges.setChecked(asciiCreator.getSettings().isEdges());
+                chbMonochrome.setChecked(asciiCreator.getSettings().isMonochrome());
                 tvFontSize.setText("Font size: " + sbFontSize.getProgress());
                 tvMinMag.setText("Minimal magnitude: " + sbMinMag.getProgress());
         }
 
         private void presentAscii() {
-                ascii.initBmpIfNeeded(this);
-                ascii.generateColoredText();
+                asciiCreator.initBmpIfNeeded(this);
+                asciiCreator.generateColoredText();
 
-                avAscii.setChcAscii(ascii.getChcArray());
+                avAscii.setChcAscii(asciiCreator.getChcArray());
                 avAscii.redraw();
         }
 
-        private void startMainActivity() {
-                Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);
-                startActivity(intent);
-        }
 
         private void handleConnectionIndicatorColor() {
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -183,8 +170,11 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                         etFileName.setError("Can't be empty");
                                         return;
                                 }
-                                saveLocaly(fileName, asciiAsBitmap);
-                                startMainActivity();
+                                Utils.saveLocaly(fileName, asciiAsBitmap, AsciiSettingsActivity.this);
+
+                                Intent intent = new Intent(AsciiSettingsActivity.this, MainActivity.class);
+                                startActivity(intent);
+
                                 alert.dismiss();
                         });
 
@@ -200,7 +190,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                         }
 
                                         @Override
-                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) {
                                                 runOnUiThread(() -> {
                                                         String artName = etFileName.getText().toString().trim();
                                                         if (artName.isEmpty()) {
@@ -208,13 +198,16 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                                                 return;
                                                         }
 
-                                                        String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
-                                                        int width = chcArray.getWidth();
-                                                        int height = chcArray.getHeight();
-                                                        char[] rawLetters = chcArray.getCharacters();
-                                                        int[] rawColors = chcArray.getColors();
+                                                        FullAscii fullAscii = new FullAscii(
+                                                                Utils.getStringFromPrefs("name", AsciiSettingsActivity.this),
+                                                                artName,
+                                                                chcArray.getWidth(),
+                                                                chcArray.getHeight(),
+                                                                chcArray.getColors(),
+                                                                chcArray.getCharacters()
+                                                        );
 
-                                                        sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
+                                                        Utils.sendAsciiToOnlineGallery(fullAscii, AsciiSettingsActivity.this, AsciiSettingsActivity.this);
                                                         alert.dismiss();
                                                 });
                                         }
@@ -235,7 +228,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                         }
 
                                         @Override
-                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) {
                                                 runOnUiThread(() -> {
                                                         String artName = etFileName.getText().toString().trim();
                                                         if (artName.isEmpty()) {
@@ -243,14 +236,17 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                                                 return;
                                                         }
 
-                                                        String author = Utils.getStringFromPrefs("name", AsciiSettingsActivity.this);
-                                                        int width = chcArray.getWidth();
-                                                        int height = chcArray.getHeight();
-                                                        char[] rawLetters = chcArray.getCharacters();
-                                                        int[] rawColors = chcArray.getColors();
+                                                        FullAscii fullAscii = new FullAscii(
+                                                                Utils.getStringFromPrefs("name", AsciiSettingsActivity.this),
+                                                                artName,
+                                                                chcArray.getWidth(),
+                                                                chcArray.getHeight(),
+                                                                chcArray.getColors(),
+                                                                chcArray.getCharacters()
+                                                        );
 
-                                                        saveLocaly(artName, asciiAsBitmap);
-                                                        sendToOnlineGallery(author, artName, width, height, rawLetters, rawColors);
+                                                        Utils.sendAsciiToOnlineGallery(fullAscii, AsciiSettingsActivity.this, AsciiSettingsActivity.this);
+                                                        Utils.saveLocaly(artName, asciiAsBitmap, AsciiSettingsActivity.this);
                                                         alert.dismiss();
                                                 });
                                         }
@@ -261,72 +257,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                         alert.show();
                 }
 
-                private void sendToOnlineGallery(String author, String artName, int width, int heigth, char[] rawLetters, int[] rawColors) {
-
-                        JSONObject json = new JSONObject();
-
-                        JSONArray letters = new JSONArray();
-                        for (char letter : rawLetters) {
-                                letters.put(String.valueOf(letter));
-                        }
-
-                        JSONArray colors = new JSONArray();
-                        for (int color : rawColors) {
-                                colors.put(color);
-                        }
-
-
-                        try {
-                                json.put("author", author);
-                                json.put("artName", artName);
-                                json.put("width", width);
-                                json.put("height", heigth);
-                                json.put("letters", letters);
-                                json.put("colors", colors);
-                        } catch (Exception e) {
-                                throw new RuntimeException(e);
-                        }
-
-                        ServerUtils.post(json.toString(), "add_image", new Callback() {
-                                @Override
-                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                        runOnUiThread(() -> {
-                                                Toast toast = new Toast(AsciiSettingsActivity.this);
-                                                toast.setText("Something went wrong ");
-                                                toast.show();
-                                        });
-                                }
-
-                                @Override
-                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                        if (response.isSuccessful()) {
-                                                runOnUiThread(() -> {
-                                                        Toast toast = new Toast(AsciiSettingsActivity.this);
-                                                        toast.setText("Image send successfully");
-                                                        toast.show();
-                                                });
-                                                startMainActivity();
-                                        }
-                                }
-                        });
-                }
-
-                private void saveLocaly(String fileName, Bitmap bmp) {
-                        ContentValues values = new ContentValues();
-                        values.put(MediaStore.Images.Media.DISPLAY_NAME, "ascii_" + fileName + ".png");
-                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
-                        ContentResolver resolver = getContentResolver();
-
-                        Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-                        try {
-                                OutputStream outStream = resolver.openOutputStream(uri);
-                                bmp.compress(Bitmap.CompressFormat.PNG, 75, outStream);
-                        } catch (Exception e) {
-                                throw new RuntimeException(e);
-                        }
-
-                }
         }
 
         private class OnCharsetChange implements TextWatcher {

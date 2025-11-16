@@ -39,7 +39,6 @@
         />
 
 
-
     <Button
         android:id="@+id/btMenu"
         android:layout_width="wrap_content"
@@ -49,6 +48,31 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:text="+" />
 
+    <Button
+        android:layout_margin="5dp"
+        android:id="@+id/btLocalGallery"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/flGallery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btGlobalGallery"
+        app:layout_constraintTop_toBottomOf="@id/llUser"
+        android:text="local"
+        />
+
+    <Button
+        android:layout_margin="5dp"
+        android:id="@+id/btGlobalGallery"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/flGallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btLocalGallery"
+        android:text="global"
+        />
+
     <FrameLayout
         android:id="@+id/flGallery"
         android:layout_width="match_parent"
@@ -56,20 +80,9 @@
         app:layout_constraintBottom_toTopOf="@id/btMenu"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/llUser"
+        app:layout_constraintTop_toBottomOf="@id/btLocalGallery"
         />
 
 
-    <!--
-    <Button
-        android:text="Send request"
-        android:id="@+id/req"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-        -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

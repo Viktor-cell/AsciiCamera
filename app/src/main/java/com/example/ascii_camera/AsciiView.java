@@ -21,10 +21,6 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
                 paint.setAntiAlias(true);
         }
 
-        public void setChcAscii(CharactersColorsArray chcAscii) {
-                this.chcAscii = chcAscii;
-        }
-
         public void redraw() {
                 invalidate();
         }
@@ -39,15 +35,12 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
                 }
 
 
-
                 float textSize = calculateTextSize();
                 paint.setTextSize(textSize);
 
                 float startY = (getHeight() - chcAscii.getHeight() * textSize) / 2 + textSize;
                 float startX = (getWidth() - chcAscii.getWidth() * textSize) / 2;
                 float step = textSize;
-
-
 
 
                 for (int y = 0; y < chcAscii.getHeight(); y++) {
@@ -77,6 +70,10 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
 
         public CharactersColorsArray getChcAscii() {
                 return chcAscii;
+        }
+
+        public void setChcAscii(CharactersColorsArray chcAscii) {
+                this.chcAscii = chcAscii;
         }
 
         public Bitmap getAsciiAsBitmap(boolean cropToContent) {

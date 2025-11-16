@@ -17,8 +17,6 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.MutableLiveData;
@@ -27,21 +25,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
-import okio.ByteString;
-
-
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -53,28 +39,6 @@ public class MainActivity extends AppCompatActivity {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
                 client = new WebsocetClient();
-
-
-                client.sendMessage(1, msq -> {
-                        try {
-                                JSONArray json = new JSONArray(msq);
-                                JSONObject art = json.getJSONObject(0);
-                                String author = art.getString("author");
-                                String artName = art.getString("artName");
-
-                                CharactersColorsArray chcArray = new CharactersColorsArray(
-                                        art.getInt("width"),
-                                        art.getInt("height"),
-                                        Utils.JSONArrayToIntArray(art.getJSONArray("colors")),
-                                        Utils.JSONArrayToCharArray(art.getJSONArray("letters"))
-                                );
-
-                                Log.d("GOT_THIS", chcArray.toString());
-
-                        } catch (Exception e) {
-                                throw new RuntimeException(e);
-                        }
-                });
 
                 initUser();
                 handleConnectionIndicatorColor();
@@ -89,11 +53,65 @@ public class MainActivity extends AppCompatActivity {
                 mldPhotoUri = new MutableLiveData<>();
                 mldPhotoUri.observe(this, new isPhotoTakenObserver());
 
-                View localGallery = createLocalGallery(Gallery.findAll(this, "ascii_"));
+                Button btLocalGallery = findViewById(R.id.btLocalGallery);
+                Button btGlobalGallery = findViewById(R.id.btGlobalGallery);
                 FrameLayout layout = findViewById(R.id.flGallery);
-                layout.addView(localGallery);
+
+                initializeGalleryButtons(btLocalGallery, btGlobalGallery, layout);
+                showLocalGallery(layout);
+        }
+
+        private void initializeGalleryButtons(Button btLocal, Button btGlobal, FrameLayout layout) {
+
+                btGlobal.setEnabled(true);
+                btLocal.setEnabled(false);
+
+                btLocal.setOnClickListener(view -> {
+                        btLocal.setEnabled(false);
+                        btGlobal.setEnabled(true);
+                        showLocalGallery(layout);
+                });
+
+                btGlobal.setOnClickListener(view -> {
+                        btLocal.setEnabled(true);
+                        btGlobal.setEnabled(false);
+                        showGlobalGallery(layout);
+                });
+        }
+
+        private void showLocalGallery(FrameLayout layout) {
+                layout.removeAllViews();
+                View galleryView = createLocalGallery(
+                        Gallery.findAll(this, "ascii_")
+                );
+
+                layout.addView(galleryView);
+        }
+
+        private void showGlobalGallery(FrameLayout layout) {
+                layout.removeAllViews();
+                client = new WebsocetClient();
+                client.sendMessage(5, msg -> {
+                        try {
+                                Log.d("GOT_THIS", msg);
+
+                                JSONArray jsonArray = new JSONArray(msg);
+                                Log.d("GOT_THIS", jsonArray.toString());
+
+                                ArrayList<FullAscii> fullAsciis = FullAscii.fromJSONArray(jsonArray);
+                                Log.d("GOT_THIS", fullAsciis.toString());
+
+                                runOnUiThread(() -> {
+                                        View galleryView = createGlobalGallery(fullAsciis);
+                                        layout.addView(galleryView);
+                                });
+                        } catch (Exception e) {
+                                throw new RuntimeException(e);
+                        }
+                });
 
         }
+
 
         private void initUser() {
                 if (Utils.getStringFromPrefs("name", this).trim().isEmpty()) {
@@ -107,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                 String name = Utils.getStringFromPrefs("name", this);
 
                 tv.setText(name);
-
 
 
                 if (!name.equals(Utils.LOGGED_OUT_USERNAME)) {
@@ -160,16 +177,30 @@ public class MainActivity extends AppCompatActivity {
                 return rvGallery;
         }
 
+        View createGlobalGallery(ArrayList<FullAscii> asciis) {
+                if (asciis.isEmpty()) {
+                        TextView tv = new TextView(MainActivity.this);
+                        tv.setText("No image found");
+                        return tv;
+                }
+                RecyclerView rvGallery = new RecyclerView(this);
+                rvGallery.setLayoutManager(new GridLayoutManager(this, 2));
+                rvGallery.setAdapter(new GlobalGalleryAdapter(asciis));
+
+                return rvGallery;
+        }
+
         private class isPhotoTakenObserver implements Observer<Uri> {
                 @Override
                 public void onChanged(Uri uri) {
                         Intent intent = new Intent(MainActivity.this, AsciiSettingsActivity.class);
-                        Ascii ascii = new Ascii(uri, AsciiSettings.defaultValues());
+                        AsciiCreator asciiCreator = new AsciiCreator(uri, AsciiSettings.defaultValues());
 
-                        intent.putExtra("Ascii", ascii);
+                        intent.putExtra("Ascii", asciiCreator);
                         startActivity(intent);
                 }
         }
+
         private class onMenuClick implements View.OnClickListener {
 
                 private final ActivityResultLauncher<PickVisualMediaRequest> pickPhotoLauncher =
@@ -228,4 +259,5 @@ public class MainActivity extends AppCompatActivity {
                         menu.show();
                 }
         }
+
 }

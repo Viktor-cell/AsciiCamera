@@ -5,7 +5,6 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -16,16 +15,15 @@ import okio.ByteString;
 
 public class WebsocetClient {
 
-        public interface WebsocketCallback {
-                void run(String msg);
-        }
         public static final String WEBSOCET_URL = "ws://" + ServerUtils.SERVER_SOCKET + "/ws";
-        private final OkHttpClient client = new OkHttpClient();
         private static final String TAG = "WebSocketClient";
-
-        private HashMap<Integer, WebsocketCallback> pendingRequests = new HashMap<>();
+        private final OkHttpClient client = new OkHttpClient();
+        private final HashMap<Integer, WebsocketCallback> pendingRequests = new HashMap<>();
         private Integer requestID = 0;
         private WebSocket ws;
+        public WebsocetClient() {
+                start();
+        }
 
         public void sendMessage(String msg, WebsocketCallback onRecieve) {
                 JSONObject json = new JSONObject();
@@ -59,10 +57,6 @@ public class WebsocetClient {
                 ws.send(reqMsg);
         }
 
-        public WebsocetClient() {
-                start();
-        }
-
         public void start() {
                 Request req = new Request.Builder().url(WEBSOCET_URL).build();
                 WebSocketListener wsl = new WebSocketListener() {
@@ -85,7 +79,7 @@ public class WebsocetClient {
 
                                 } catch (Exception e) {
                                         throw new RuntimeException(e);
-                                };
+                                }
                         }
 
                         @Override
@@ -107,5 +101,9 @@ public class WebsocetClient {
 
                 this.ws = client.newWebSocket(req, wsl);
                 //client.dispatcher().executorService().shutdown();
+        }
+
+        public interface WebsocketCallback {
+                void run(String msg);
         }
 }

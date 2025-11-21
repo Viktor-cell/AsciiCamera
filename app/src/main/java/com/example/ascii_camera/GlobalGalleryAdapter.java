@@ -1,15 +1,21 @@
 package com.example.ascii_camera;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
@@ -35,6 +41,34 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
                 holder.img.setImageBitmap(fullAscii.toAsciiBitmap(holder.ctx));
 
                 holder.text.setText(fullAscii.getAuthor() + ":" + fullAscii.getArtName());
+
+                holder.img.setOnClickListener(view -> {
+                        LayoutInflater inflater = LayoutInflater.from(holder.ctx);
+
+                        View customDialog = inflater.inflate(R.layout.image_preview_main_activity_dialog, null);
+
+                        ImageView img = customDialog.findViewById(R.id.imgPreview);
+                        ImageButton bt = customDialog.findViewById(R.id.btClose);
+
+                        AlertDialog alert = new AlertDialog.Builder(holder.ctx)
+                                .setCancelable(true)
+                                .setMessage(holder.text.getText())
+                                .setView(customDialog)
+                                .create();
+
+                        bt.setOnClickListener(v -> {
+                                alert.dismiss();
+                        });
+
+                        img.setImageBitmap(fullAsciis.get(position).toAsciiBitmap(holder.ctx));
+                        alert.show();
+                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+                });
+
+                holder.button.setOnClickListener(view -> {
+                        Utils.saveLocaly(holder.text.getText().toString(), fullAsciis.get(position).toAsciiBitmap(holder.ctx), holder.ctx);
+                        Toast.makeText(holder.ctx, "image saved", Toast.LENGTH_SHORT).show();
+                });
         }
 
         @Override
@@ -43,7 +77,7 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
         }
 
         public static class GalleryViewHolder extends RecyclerView.ViewHolder {
-                private final Button button;
+                private final MaterialButton button;
                 private final TextView text;
                 private final ImageView img;
                 private final Context ctx;

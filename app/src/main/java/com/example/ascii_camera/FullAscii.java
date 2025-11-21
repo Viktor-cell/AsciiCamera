@@ -55,8 +55,8 @@ public class FullAscii {
         public AsciiView toAsciiView(Context ctx) {
                 AsciiView asciiView = new AsciiView(ctx, null);
 
-                int viewWidth = chcArray.getWidth() * 10;
-                int viewHeigth = chcArray.getHeight() * 10;
+                int viewWidth = chcArray.getWidth() * 25;
+                int viewHeigth = chcArray.getHeight() * 25;
                 asciiView.setChcAscii(chcArray);
 
                 asciiView.measure(

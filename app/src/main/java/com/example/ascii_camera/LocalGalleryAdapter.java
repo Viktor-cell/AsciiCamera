@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,7 +56,7 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
                         View customDialog = inflater.inflate(R.layout.image_preview_main_activity_dialog, null);
 
                         ImageView img = customDialog.findViewById(R.id.imgPreview);
-                        Button bt = customDialog.findViewById(R.id.btClose);
+                        ImageButton bt = customDialog.findViewById(R.id.btClose);
 
                         AlertDialog alert = new AlertDialog.Builder(holder.ctx)
                                 .setCancelable(true)
@@ -69,7 +70,7 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
 
                         img.setImageURI(imageUris.get(position));
                         alert.show();
-                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
                 });
         }
 
@@ -81,7 +82,7 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
         public static class GalleryViewHolder extends RecyclerView.ViewHolder {
                 ImageView img;
                 TextView tv;
-                Button btnTrash;
+                ImageButton btnTrash;
                 //LinearLayout llTextAndButton;
                 Context ctx;
 

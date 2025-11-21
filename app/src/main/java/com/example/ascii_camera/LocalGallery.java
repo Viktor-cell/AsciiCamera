@@ -9,7 +9,7 @@ import android.provider.MediaStore;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Gallery {
+public class LocalGallery {
         public static ArrayList<Uri> findAll(Context ctx, String prefix) {
                 ArrayList<Uri> uris = new ArrayList<>();
 

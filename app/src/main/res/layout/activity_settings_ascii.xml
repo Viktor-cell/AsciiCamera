@@ -7,79 +7,71 @@
     android:layout_height="match_parent"
     tools:context=".AsciiSettingsActivity">
 
-    <View
-        android:id="@+id/vConnectionIndicator"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_margin="3dp"
-        android:background="#ff0000"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <com.example.ascii_camera.AsciiView
         android:id="@+id/avAscii"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:fontFamily="@font/monospaced_font"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <View
+        android:id="@+id/vConnectionIndicator"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="16dp"
+        android:background="#f38ba8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Settings"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_settings"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="?colorSurface"
+        app:tint="?colorOnSurface"/>
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/llSettingContainer"
-        android:layout_width="200dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_margin="16dp"
         android:visibility="invisible"
+        app:cardBackgroundColor="?colorSurface"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btSettings">
 
-        <!-- Charset -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:orientation="horizontal"
-            android:visibility="visible">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Character set:" />
-
-            <EditText
-                android:id="@+id/etCharset"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:hint="Character set">
 
-        </LinearLayout>
-
-        <!-- FontSize -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:orientation="vertical"
-            android:visibility="visible"
-
-            >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCharset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/tvFontSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Font size:" />
+                android:layout_marginTop="16dp"
+                android:text="Font size" />
 
             <SeekBar
                 android:id="@+id/sbFontSize"
@@ -88,23 +80,12 @@
                 android:max="150"
                 android:min="3" />
 
-        </LinearLayout>
-
-        <!-- Min Mag -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:orientation="vertical"
-            android:visibility="visible"
-
-            >
-
             <TextView
                 android:id="@+id/tvMinMag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minimal magnituge: " />
+                android:layout_marginTop="16dp"
+                android:text="Minimal magnitude" />
 
             <SeekBar
                 android:id="@+id/sbMinMag"
@@ -113,56 +94,53 @@
                 android:max="1000"
                 android:min="1" />
 
-        </LinearLayout>
-
-        <!-- Monochrome -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Monochrome:" />
-
-            <CheckBox
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/chbMonochrome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <!-- Edges -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edges:" />
+                android:layout_marginTop="16dp"
+                android:text="Monochrome" />
 
-            <CheckBox
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/chbEdges"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edges" />
         </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btSaveImage"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:orientation="horizontal"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btReturn"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Return" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btUploadImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="Upload" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btSaveImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

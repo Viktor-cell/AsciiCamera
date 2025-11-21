@@ -21,6 +21,7 @@ public class WebsocetClient {
         private final HashMap<Integer, WebsocketCallback> pendingRequests = new HashMap<>();
         private Integer requestID = 0;
         private WebSocket ws;
+
         public WebsocetClient() {
                 start();
         }

@@ -58,8 +58,8 @@ public class Utils {
                         json.put("artName", fullAscii.getArtName());
                         json.put("width", fullAscii.getChcArray().getWidth());
                         json.put("height", fullAscii.getChcArray().getHeight());
-                        json.put("letters", fullAscii.getChcArray().getCharacters());
-                        json.put("colors", fullAscii.getChcArray().getColors());
+                        json.put("letters", letters);
+                        json.put("colors", colors);
                 } catch (Exception e) {
                         throw new RuntimeException(e);
                 }
@@ -68,9 +68,7 @@ public class Utils {
                         @Override
                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                 act.runOnUiThread(() -> {
-                                        Toast toast = new Toast(ctx);
-                                        toast.setText("Something went wrong ");
-                                        toast.show();
+                                        Toast.makeText(ctx, "Something went wrong", Toast.LENGTH_SHORT).show();
                                 });
                         }
 
@@ -78,9 +76,7 @@ public class Utils {
                         public void onResponse(@NonNull Call call, @NonNull Response response) {
                                 if (response.isSuccessful()) {
                                         act.runOnUiThread(() -> {
-                                                Toast toast = new Toast(ctx);
-                                                toast.setText("Image send successfully");
-                                                toast.show();
+                                                Toast.makeText(ctx, "Image send successfully", Toast.LENGTH_SHORT).show();
                                         });
                                         Intent intent = new Intent(ctx, MainActivity.class);
                                         act.startActivity(intent);

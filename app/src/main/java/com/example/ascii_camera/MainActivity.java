@@ -2,6 +2,7 @@ package com.example.ascii_camera;
 
 import android.content.Intent;
 import android.graphics.Color;
+import androidx.core.content.ContextCompat;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,8 +10,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -23,6 +24,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONArray;
 
@@ -53,15 +56,15 @@ public class MainActivity extends AppCompatActivity {
                 mldPhotoUri = new MutableLiveData<>();
                 mldPhotoUri.observe(this, new isPhotoTakenObserver());
 
-                Button btLocalGallery = findViewById(R.id.btLocalGallery);
-                Button btGlobalGallery = findViewById(R.id.btGlobalGallery);
+                MaterialButton btLocalGallery = findViewById(R.id.btLocalGallery);
+                MaterialButton btGlobalGallery = findViewById(R.id.btGlobalGallery);
                 FrameLayout layout = findViewById(R.id.flGallery);
 
                 initializeGalleryButtons(btLocalGallery, btGlobalGallery, layout);
                 showLocalGallery(layout);
         }
 
-        private void initializeGalleryButtons(Button btLocal, Button btGlobal, FrameLayout layout) {
+        private void initializeGalleryButtons(MaterialButton btLocal, MaterialButton btGlobal, FrameLayout layout) {
 
                 btGlobal.setEnabled(true);
                 btLocal.setEnabled(false);
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         private void showLocalGallery(FrameLayout layout) {
                 layout.removeAllViews();
                 View galleryView = createLocalGallery(
-                        Gallery.findAll(this, "ascii_")
+                        LocalGallery.findAll(this, "ascii_")
                 );
 
                 layout.addView(galleryView);
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void handleAccountButtonAndTextView() {
-                Button btn = findViewById(R.id.btAccount);
+                ImageButton btn = findViewById(R.id.btAccount);
                 TextView tv = findViewById(R.id.tvLoginName);
                 String name = Utils.getStringFromPrefs("name", this);
 
@@ -128,13 +131,11 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (!name.equals(Utils.LOGGED_OUT_USERNAME)) {
-                        btn.setText("Log out");
                         btn.setOnClickListener(view -> {
                                 Utils.editStringInPrefs("name", Utils.LOGGED_OUT_USERNAME, this);
                                 recreate();
                         });
-                } else if (name.equals(Utils.LOGGED_OUT_USERNAME)) {
-                        btn.setText("Log in");
+                } else {
                         btn.setOnClickListener(view -> startActivity(new Intent(this, LoginActivity.class)));
                 }
 
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                                         GradientDrawable i = new GradientDrawable();
 
                                         runOnUiThread(() -> {
-                                                i.setColor(isOnline ? Color.GREEN : Color.RED);
+                                                i.setColor(isOnline ? ContextCompat.getColor(MainActivity.this, R.color.one_dark_green) : ContextCompat.getColor(MainActivity.this, R.color.one_dark_red));
                                                 indicator.setBackground(i);
                                         });
                                 }).start();

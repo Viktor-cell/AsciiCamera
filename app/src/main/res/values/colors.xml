@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- One Dark Theme -->
-    <color name="one_dark_background">#282c34</color>
-    <color name="one_dark_foreground">#abb2bf</color>
-    <color name="one_dark_comment">#5c6370</color>
-    <color name="one_dark_red">#e06c75</color>
-    <color name="one_dark_green">#98c379</color>
-    <color name="one_dark_yellow">#e5c07b</color>
-    <color name="one_dark_blue">#61afef</color>
-    <color name="one_dark_purple">#c678dd</color>
-    <color name="one_dark_cyan">#56b6c2</color>
-    <color name="one_dark_black">#21252b</color>
-    <color name="one_dark_white">#abb2bf</color>
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="primary">#4FC3F7</color>
+    <color name="secondary">#FFB74D</color>
+    <color name="accent">#F06292</color>
+    <color name="textPrimary">#E0E0E0</color>
+    <color name="textSecondary">#B0B0B0</color>
+    <color name="border">#2C2C2C</color>
+    <color name="error">#EF5350</color>
+    <color name="success">#66BB6A</color>
 </resources>

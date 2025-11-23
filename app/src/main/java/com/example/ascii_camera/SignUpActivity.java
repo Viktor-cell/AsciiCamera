@@ -1,17 +1,12 @@
 package com.example.ascii_camera;
 
 import android.content.Intent;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,30 +20,31 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
-        private MaterialButton btLogin;
         private MaterialButton btSignUp;
         private ImageButton btBack;
         private TextInputEditText etName;
         private TextInputEditText etPassword;
+        private TextInputEditText etConfirmPassword;
         private TextInputLayout tilName;
         private TextInputLayout tilPassword;
+        private TextInputLayout tilConfirmPassword;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_login);
-
-                handleConnectionIndicatorColor();
+                setContentView(R.layout.activity_sign_up);
                 initVars();
 
-                btLogin.setOnClickListener(view -> {
+                btSignUp.setOnClickListener(view -> {
                         String name = etName.getText().toString().trim();
                         String password = etPassword.getText().toString().trim();
+                        String confirmPassword = etConfirmPassword.getText().toString().trim();
 
                         tilName.setError(null);
                         tilPassword.setError(null);
+                        tilConfirmPassword.setError(null);
 
                         if (name.isEmpty()) {
                                 tilName.setError("Can't be empty");
@@ -56,8 +52,14 @@ public class LoginActivity extends AppCompatActivity {
                         if (password.isEmpty()) {
                                 tilPassword.setError("Can't be empty");
                         }
+                        if (confirmPassword.isEmpty()) {
+                                tilConfirmPassword.setError("Can't be empty");
+                        }
+                        if (!password.equals(confirmPassword)) {
+                                tilConfirmPassword.setError("Doesn't match password");
+                        }
 
-                        if (name.isEmpty() || password.isEmpty()) {
+                        if (name.isEmpty() || password.isEmpty() || !password.equals(confirmPassword)) {
                                 return;
                         }
 
@@ -70,57 +72,29 @@ public class LoginActivity extends AppCompatActivity {
                                 throw new RuntimeException(e);
                         }
 
-                        ServerUtils.post(json.toString(), "log_in", new LoginCallback());
-                });
-
-                btSignUp.setOnClickListener(view -> {
-                        startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                        ServerUtils.post(json.toString(), "sign_up", new SignUpCallback());
                 });
 
                 btBack.setOnClickListener(view -> {
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                 });
         }
 
-        private void handleConnectionIndicatorColor() {
-                Handler handler = new Handler(Looper.getMainLooper());
-                View indicator = findViewById(R.id.vConnectionIndicator);
-
-                Runnable connectionCheckRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                                new Thread(() -> {
-                                        boolean isOnline = ServerUtils.isOnline();
-                                        GradientDrawable i = new GradientDrawable();
-
-                                        runOnUiThread(() -> {
-                                                i.setColor(isOnline ? ContextCompat.getColor(LoginActivity.this, R.color.success                )
-                                                        : ContextCompat.getColor(LoginActivity.this, R.color.error));
-                                                indicator.setBackground(i);
-                                        });
-                                }).start();
-
-                                handler.postDelayed(this, 5000);
-                        }
-                };
-
-                handler.post(connectionCheckRunnable);
-        }
-
         private void initVars() {
-                btLogin = findViewById(R.id.btLogin);
                 btSignUp = findViewById(R.id.btSignUp);
                 btBack = findViewById(R.id.btBack);
                 etName = findViewById(R.id.etName);
                 etPassword = findViewById(R.id.etPassword);
+                etConfirmPassword = findViewById(R.id.etConfirmPassword);
                 tilName = findViewById(R.id.tilName);
                 tilPassword = findViewById(R.id.tilPassword);
+                tilConfirmPassword = findViewById(R.id.tilConfirmPassword);
         }
 
-        private class LoginCallback implements Callback {
+        private class SignUpCallback implements Callback {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> Toast.makeText(SignUpActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -141,10 +115,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         String name = etName.getText().toString().trim();
-                        Utils.addStringToPrefs("name", name, LoginActivity.this);
-
-
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        Utils.addStringToPrefs("name", name, SignUpActivity.this);
+                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                 }
         }
 }

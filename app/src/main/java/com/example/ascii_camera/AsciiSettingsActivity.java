@@ -140,7 +140,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                         GradientDrawable i = new GradientDrawable();
 
                                         runOnUiThread(() -> {
-                                                i.setColor(isOnline ? ContextCompat.getColor(AsciiSettingsActivity.this, R.color.one_dark_green) : ContextCompat.getColor(AsciiSettingsActivity.this, R.color.one_dark_red));
+                                                i.setColor(isOnline ? ContextCompat.getColor(AsciiSettingsActivity.this, R.color.success) : ContextCompat.getColor(AsciiSettingsActivity.this, R.color.error));
                                                 indicator.setBackground(i);
                                         });
                                 }).start();

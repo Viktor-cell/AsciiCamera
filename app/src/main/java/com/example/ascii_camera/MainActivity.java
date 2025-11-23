@@ -132,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!name.equals(Utils.LOGGED_OUT_USERNAME)) {
                         btn.setOnClickListener(view -> {
-                                Utils.editStringInPrefs("name", Utils.LOGGED_OUT_USERNAME, this);
-                                recreate();
+                                startActivity(new Intent(this, AccountActivity.class));
                         });
                 } else {
                         btn.setOnClickListener(view -> startActivity(new Intent(this, LoginActivity.class)));
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                                         GradientDrawable i = new GradientDrawable();
 
                                         runOnUiThread(() -> {
-                                                i.setColor(isOnline ? ContextCompat.getColor(MainActivity.this, R.color.one_dark_green) : ContextCompat.getColor(MainActivity.this, R.color.one_dark_red));
+                                                i.setColor(isOnline ? ContextCompat.getColor(MainActivity.this, R.color.success) : ContextCompat.getColor(MainActivity.this, R.color.error));
                                                 indicator.setBackground(i);
                                         });
                                 }).start();

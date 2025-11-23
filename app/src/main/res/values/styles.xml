@@ -1,7 +1,7 @@
 <resources>
 
     <style name="Widget.Theme.Asciicamera.MyView" parent="">
-        <item name="android:background">@color/one_dark_background</item>
-        <item name="exampleColor">@color/one_dark_blue</item>
+        <item name="android:background">@color/background</item>
+        <item name="exampleColor">@color/primary</item>
     </style>
 </resources>

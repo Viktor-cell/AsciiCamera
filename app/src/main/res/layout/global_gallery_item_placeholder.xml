@@ -7,7 +7,7 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="?colorSurface">
+    app:cardBackgroundColor="@color/surface">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="?colorOnSurface"
+                android:textColor="@color/textPrimary"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 tools:text="Image Name" />
 
@@ -47,6 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Get"
+                android:textColor="@color/primary"
                 style="@style/Widget.Material3.Button.TextButton" />
 
         </LinearLayout>

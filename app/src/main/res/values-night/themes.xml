@@ -2,35 +2,27 @@
 <resources>
     <style name="Theme.Asciicamera" parent="Theme.Material3.Dark.NoActionBar">
         
-        <item name="colorPrimary">@color/one_dark_purple</item>
-        <item name="colorOnPrimary">@color/one_dark_background</item>
-        <item name="colorPrimaryContainer">@color/one_dark_purple</item>
-        <item name="colorOnPrimaryContainer">@color/one_dark_background</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/textPrimary</item>
+        <item name="colorPrimaryContainer">@color/primary</item>
+        <item name="colorOnPrimaryContainer">@color/textPrimary</item>
         
-        <item name="colorSecondary">@color/one_dark_cyan</item>
-        <item name="colorOnSecondary">@color/one_dark_background</item>
-        <item name="colorSecondaryContainer">@color/one_dark_cyan</item>
-        <item name="colorOnSecondaryContainer">@color/one_dark_background</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/textPrimary</item>
+        <item name="colorSecondaryContainer">@color/secondary</item>
+        <item name="colorOnSecondaryContainer">@color/textPrimary</item>
 
-        <item name="colorTertiary">@color/one_dark_blue</item>
-        <item name="colorOnTertiary">@color/one_dark_background</item>
-        <item name="colorTertiaryContainer">@color/one_dark_blue</item>
-        <item name="colorOnTertiaryContainer">@color/one_dark_background</item>
-        
-        <item name="android:colorBackground">@color/one_dark_background</item>
-        <item name="colorOnBackground">@color/one_dark_foreground</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/textPrimary</item>
 
-        <item name="colorSurface">@color/one_dark_black</item>
-        <item name="colorOnSurface">@color/one_dark_foreground</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/textPrimary</item>
         
-        <item name="colorSurfaceVariant">@color/one_dark_comment</item>
-        <item name="colorOnSurfaceVariant">@color/one_dark_foreground</item>
-        
-        <item name="colorError">@color/one_dark_red</item>
-        <item name="colorOnError">@color/one_dark_background</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/textPrimary</item>
 
-        <item name="android:statusBarColor">@color/one_dark_background</item>
-        <item name="android:navigationBarColor">@color/one_dark_background</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
         
     </style>
 </resources>

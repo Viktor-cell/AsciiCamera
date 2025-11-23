@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AsciiSettingsActivity">
+    tools:context=".AsciiSettingsActivity"
+    android:background="@color/background">
 
     <com.example.ascii_camera.AsciiView
         android:id="@+id/avAscii"
@@ -22,7 +23,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_margin="16dp"
-        android:background="#f38ba8"
+        android:background="@color/error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,8 +35,8 @@
         app:srcCompat="@drawable/ic_settings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:backgroundTint="?colorSurface"
-        app:tint="?colorOnSurface"/>
+        app:backgroundTint="@color/surface"
+        app:tint="@color/textPrimary"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/llSettingContainer"
@@ -43,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:visibility="invisible"
-        app:cardBackgroundColor="?colorSurface"
+        app:cardBackgroundColor="@color/surface"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,12 +59,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/textSecondary"
                 android:hint="Character set">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCharset"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/textPrimary"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -71,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:textColor="@color/textSecondary"
                 android:text="Font size" />
 
             <SeekBar
@@ -85,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:textColor="@color/textSecondary"
                 android:text="Minimal magnitude" />
 
             <SeekBar
@@ -99,12 +104,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:textColor="@color/textPrimary"
                 android:text="Monochrome" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/chbEdges"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/textPrimary"
                 android:text="Edges" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -124,6 +131,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/primary"
             android:text="Return" />
 
         <com.google.android.material.button.MaterialButton
@@ -133,6 +141,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
+            android:backgroundTint="@color/secondary"
+            android:textColor="@color/textPrimary"
             android:text="Upload" />
 
         <com.google.android.material.button.MaterialButton
@@ -140,6 +150,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:backgroundTint="@color/primary"
+            android:textColor="@color/textPrimary"
             android:text="Save" />
     </LinearLayout>
 

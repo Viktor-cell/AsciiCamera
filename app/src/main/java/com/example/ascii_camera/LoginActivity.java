@@ -61,11 +61,10 @@ public class LoginActivity extends AppCompatActivity {
                                 return;
                         }
 
-                        String passwordHash = Utils.hash(password);
                         JSONObject json = new JSONObject();
                         try {
                                 json.put("name", name);
-                                json.put("password_hash", passwordHash);
+                                json.put("password", password);
                         } catch (Exception e) {
                                 throw new RuntimeException(e);
                         }
@@ -78,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
                 btBack.setOnClickListener(view -> {
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivityLocalGallery.class));
                 });
         }
 
@@ -144,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                         Utils.addStringToPrefs("name", name, LoginActivity.this);
 
 
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivityLocalGallery.class));
                 }
         }
 }

@@ -37,7 +37,7 @@
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_close"
-                app:tint="@color/textPrimary"
+                app:tint="@color/error"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

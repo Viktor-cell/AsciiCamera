@@ -26,6 +26,16 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
                 this.fullAsciis = fullAsciis;
         }
 
+        public GlobalGalleryAdapter() {
+                fullAsciis = new ArrayList<>();
+        }
+
+        public void addAsciis(ArrayList<FullAscii> fullAsciis) {
+                int oldSize = this.fullAsciis.size();
+                this.fullAsciis.addAll(fullAsciis);
+                notifyItemRangeInserted(oldSize, fullAsciis.size());
+        }
+
         @NonNull
         @Override
         public GlobalGalleryAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,7 +50,8 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
                 FullAscii fullAscii = fullAsciis.get(position);
                 holder.img.setImageBitmap(fullAscii.toAsciiBitmap(holder.ctx));
 
-                holder.text.setText(fullAscii.getAuthor() + ":" + fullAscii.getArtName());
+                holder.tvAuthor.setText(fullAscii.getAuthor());
+                holder.tvArtname.setText(fullAscii.getArtName());
 
                 holder.img.setOnClickListener(view -> {
                         LayoutInflater inflater = LayoutInflater.from(holder.ctx);
@@ -52,7 +63,7 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
 
                         AlertDialog alert = new AlertDialog.Builder(holder.ctx)
                                 .setCancelable(true)
-                                .setMessage(holder.text.getText())
+                                //.setMessage(holder.tvArtname.getText())
                                 .setView(customDialog)
                                 .create();
 
@@ -62,11 +73,11 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
 
                         img.setImageBitmap(fullAsciis.get(position).toAsciiBitmap(holder.ctx));
                         alert.show();
-                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 });
 
                 holder.button.setOnClickListener(view -> {
-                        Utils.saveLocaly(holder.text.getText().toString(), fullAsciis.get(position).toAsciiBitmap(holder.ctx), holder.ctx);
+                        Utils.saveLocaly(holder.tvArtname.getText().toString(), fullAsciis.get(position).toAsciiBitmap(holder.ctx), holder.ctx);
                         Toast.makeText(holder.ctx, "image saved", Toast.LENGTH_SHORT).show();
                 });
         }
@@ -78,14 +89,16 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
 
         public static class GalleryViewHolder extends RecyclerView.ViewHolder {
                 private final MaterialButton button;
-                private final TextView text;
+                private final TextView tvAuthor;
+                private final TextView tvArtname;
                 private final ImageView img;
                 private final Context ctx;
 
                 public GalleryViewHolder(@NonNull View itemView, Context ctx) {
                         super(itemView);
                         this.button = itemView.findViewById(R.id.button);
-                        this.text = itemView.findViewById(R.id.text);
+                        this.tvAuthor = itemView.findViewById(R.id.tvAuthor);
+                        this.tvArtname = itemView.findViewById(R.id.artName);
                         this.img = itemView.findViewById(R.id.image);
                         this.ctx = ctx;
                 }

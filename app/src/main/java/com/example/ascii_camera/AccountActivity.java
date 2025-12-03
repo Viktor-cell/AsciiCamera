@@ -25,12 +25,12 @@ public class AccountActivity extends AppCompatActivity {
                 tvName.setText(Utils.getStringFromPrefs("name", AccountActivity.this));
 
                 btBack.setOnClickListener(view -> {
-                        startActivity(new Intent(AccountActivity.this, MainActivity.class));
+                        startActivity(new Intent(AccountActivity.this, MainActivityLocalGallery.class));
                 });
 
                 btLogout.setOnClickListener(view -> {
                         Utils.editStringInPrefs("name", Utils.LOGGED_OUT_USERNAME, AccountActivity.this);
-                        startActivity(new Intent(AccountActivity.this, MainActivity.class));
+                        startActivity(new Intent(AccountActivity.this, MainActivityLocalGallery.class));
                 });
         }
 

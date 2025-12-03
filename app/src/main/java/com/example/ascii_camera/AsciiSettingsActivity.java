@@ -2,7 +2,7 @@ package com.example.ascii_camera;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+
 import androidx.core.content.ContextCompat;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -230,7 +230,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                                 Toast.makeText(AsciiSettingsActivity.this, "Filename cant be empty", Toast.LENGTH_SHORT).show();
                                                 return;
                                         }
-                                        Utils.saveLocaly(Utils.hash("" + Math.random()), asciiAsBitmap, AsciiSettingsActivity.this);
+                                        Utils.saveLocaly(artName, asciiAsBitmap, AsciiSettingsActivity.this);
                                         Toast.makeText(AsciiSettingsActivity.this, "File saved successfully", Toast.LENGTH_SHORT).show();
 
                                 })
@@ -245,7 +245,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         private class OnReturnButtonClick implements View.OnClickListener {
                 @Override
                 public void onClick(View view) {
-                        startActivity(new Intent(AsciiSettingsActivity.this, MainActivity.class));
+                        startActivity(new Intent(AsciiSettingsActivity.this, MainActivityLocalGallery.class));
                 }
         }
 

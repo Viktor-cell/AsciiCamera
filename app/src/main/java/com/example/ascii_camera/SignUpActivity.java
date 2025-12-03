@@ -63,11 +63,10 @@ public class SignUpActivity extends AppCompatActivity {
                                 return;
                         }
 
-                        String passwordHash = Utils.hash(password);
                         JSONObject json = new JSONObject();
                         try {
                                 json.put("name", name);
-                                json.put("password_hash", passwordHash);
+                                json.put("password", password);
                         } catch (Exception e) {
                                 throw new RuntimeException(e);
                         }
@@ -106,7 +105,6 @@ public class SignUpActivity extends AppCompatActivity {
                                         try {
                                                 String errorMsg = response.body() != null ? response.body().string() : "Unknown error";
                                                 tilName.setError(errorMsg);
-                                                tilPassword.setError(errorMsg);
                                         } catch (IOException e) {
                                                 throw new RuntimeException(e);
                                         }
@@ -116,7 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                         String name = etName.getText().toString().trim();
                         Utils.addStringToPrefs("name", name, SignUpActivity.this);
-                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                        startActivity(new Intent(SignUpActivity.this, MainActivityLocalGallery.class));
                 }
         }
 }

@@ -1,7 +1,6 @@
 package com.example.ascii_camera;
 
 import android.content.Intent;
-import android.graphics.Color;
 import androidx.core.content.ContextCompat;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -22,25 +21,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivityGlobalGallery extends AppCompatActivity {
         private MutableLiveData<Uri> mldPhotoUri;
         private WebsocetClient client;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_main);
+                setContentView(R.layout.activity_main_global_gallery);
                 client = new WebsocetClient();
 
                 initUser();
@@ -60,41 +60,30 @@ public class MainActivity extends AppCompatActivity {
                 MaterialButton btGlobalGallery = findViewById(R.id.btGlobalGallery);
                 FrameLayout layout = findViewById(R.id.flGallery);
 
-                initializeGalleryButtons(btLocalGallery, btGlobalGallery, layout);
-                showLocalGallery(layout);
-        }
+                btGlobalGallery.setEnabled(false);
+                btGlobalGallery.setAlpha(0.5f);
 
-        private void initializeGalleryButtons(MaterialButton btLocal, MaterialButton btGlobal, FrameLayout layout) {
-
-                btGlobal.setEnabled(true);
-                btLocal.setEnabled(false);
-
-                btLocal.setOnClickListener(view -> {
-                        btLocal.setEnabled(false);
-                        btGlobal.setEnabled(true);
-                        showLocalGallery(layout);
+                btLocalGallery.setEnabled(true);
+                btLocalGallery.setOnClickListener(view -> {
+                        startActivity(new Intent(this, MainActivityLocalGallery.class));
+                        overridePendingTransition(0, 0);
                 });
-
-                btGlobal.setOnClickListener(view -> {
-                        btLocal.setEnabled(true);
-                        btGlobal.setEnabled(false);
-                        showGlobalGallery(layout);
-                });
+                showGlobalGallery(layout);
         }
 
-        private void showLocalGallery(FrameLayout layout) {
-                layout.removeAllViews();
-                View galleryView = createLocalGallery(
-                        LocalGallery.findAll(this, "ascii_")
-                );
 
-                layout.addView(galleryView);
-        }
 
         private void showGlobalGallery(FrameLayout layout) {
                 layout.removeAllViews();
                 client = new WebsocetClient();
-                client.sendMessage(5, msg -> {
+
+                JSONObject json = new JSONObject(Map.of(
+                        "count", 15,
+                        "author", "",
+                        "artname", ""
+                ));
+
+                client.sendMessage(json, msg -> {
                         try {
                                 Log.d("GOT_THIS", msg);
 
@@ -105,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("GOT_THIS", fullAsciis.toString());
 
                                 runOnUiThread(() -> {
-                                        View galleryView = createGlobalGallery(fullAsciis);
+                                        View galleryView = Utils.createGlobalGallery(fullAsciis, MainActivityGlobalGallery.this, client);
                                         layout.addView(galleryView);
                                 });
                         } catch (Exception e) {
@@ -152,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                                         GradientDrawable i = new GradientDrawable();
 
                                         runOnUiThread(() -> {
-                                                i.setColor(isOnline ? ContextCompat.getColor(MainActivity.this, R.color.success) : ContextCompat.getColor(MainActivity.this, R.color.error));
+                                                i.setColor(isOnline ? ContextCompat.getColor(MainActivityGlobalGallery.this, R.color.success) : ContextCompat.getColor(MainActivityGlobalGallery.this, R.color.error));
                                                 indicator.setBackground(i);
                                         });
                                 }).start();
@@ -164,36 +153,12 @@ public class MainActivity extends AppCompatActivity {
                 handler.post(connectionCheckRunnable);
         }
 
-        View createLocalGallery(ArrayList<Uri> images) {
-                if (images.isEmpty()) {
-                        TextView tv = new TextView(MainActivity.this);
-                        tv.setText("No image found");
-                        return tv;
-                }
-                RecyclerView rvGallery = new RecyclerView(this);
-                rvGallery.setLayoutManager(new GridLayoutManager(this, 2));
-                rvGallery.setAdapter(new LocalGalleryAdapter(images));
 
-                return rvGallery;
-        }
-
-        View createGlobalGallery(ArrayList<FullAscii> asciis) {
-                if (asciis.isEmpty()) {
-                        TextView tv = new TextView(MainActivity.this);
-                        tv.setText("No image found");
-                        return tv;
-                }
-                RecyclerView rvGallery = new RecyclerView(this);
-                rvGallery.setLayoutManager(new GridLayoutManager(this, 2));
-                rvGallery.setAdapter(new GlobalGalleryAdapter(asciis));
-
-                return rvGallery;
-        }
 
         private class isPhotoTakenObserver implements Observer<Uri> {
                 @Override
                 public void onChanged(Uri uri) {
-                        Intent intent = new Intent(MainActivity.this, AsciiSettingsActivity.class);
+                        Intent intent = new Intent(MainActivityGlobalGallery.this, AsciiSettingsActivity.class);
                         AsciiCreator asciiCreator = new AsciiCreator(uri, AsciiSettings.defaultValues());
 
                         intent.putExtra("Ascii", asciiCreator);
@@ -221,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(View view) {
-                        PopupMenu menu = new PopupMenu(MainActivity.this, view);
+                        PopupMenu menu = new PopupMenu(MainActivityGlobalGallery.this, view);
 
                         menu.setOnMenuItemClickListener(menuItem -> {
                                 int id = menuItem.getItemId();
@@ -230,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                                         try {
                                                 File tempFile = File.createTempFile("tmp_", ".jpg", new File(getCacheDir() + "/tmpImageDir"));
                                                 uri = FileProvider.getUriForFile(
-                                                        MainActivity.this,
+                                                        MainActivityGlobalGallery.this,
                                                         getPackageName() + ".provider",
                                                         tempFile
                                                 );

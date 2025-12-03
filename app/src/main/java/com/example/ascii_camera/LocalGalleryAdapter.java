@@ -60,7 +60,7 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
 
                         AlertDialog alert = new AlertDialog.Builder(holder.ctx)
                                 .setCancelable(true)
-                                .setMessage(holder.tv.getText())
+                                //.setMessage(holder.tv.getText())
                                 .setView(customDialog)
                                 .create();
 

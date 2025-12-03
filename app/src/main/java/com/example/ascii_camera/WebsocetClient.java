@@ -31,7 +31,6 @@ public class WebsocetClient {
 
                 try {
                         json.put("id", requestID);
-                        json.put("msg", msg);
                 } catch (Exception e) {
                         throw new RuntimeException(e);
                 }
@@ -42,12 +41,9 @@ public class WebsocetClient {
                 ws.send(reqMsg);
         }
 
-        public void sendMessage(float msg, WebsocketCallback onRecieve) {
-                JSONObject json = new JSONObject();
-
+        public void sendMessage(JSONObject json, WebsocketCallback onRecieve) {
                 try {
                         json.put("id", requestID);
-                        json.put("msg", msg);
                 } catch (Exception e) {
                         throw new RuntimeException(e);
                 }

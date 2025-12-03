@@ -14,11 +14,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -78,7 +84,7 @@ public class Utils {
                                         act.runOnUiThread(() -> {
                                                 Toast.makeText(ctx, "Image send successfully", Toast.LENGTH_SHORT).show();
                                         });
-                                        Intent intent = new Intent(ctx, MainActivity.class);
+                                        Intent intent = new Intent(ctx, MainActivityLocalGallery.class);
                                         act.startActivity(intent);
                                 }
                         }
@@ -186,4 +192,78 @@ public class Utils {
                 }
                 return res;
         }
+
+        public static View createLocalGallery(ArrayList<Uri> images, Context ctx) {
+                if (images.isEmpty()) {
+                        TextView tv = new TextView(ctx);
+                        tv.setText("No image found");
+                        return tv;
+                }
+                RecyclerView rvGallery = new RecyclerView(ctx);
+                rvGallery.setLayoutManager(new GridLayoutManager(ctx, 2));
+                rvGallery.setAdapter(new LocalGalleryAdapter(images));
+
+                return rvGallery;
+        }
+
+        public static View createGlobalGallery(ArrayList<FullAscii> asciis, Context ctx, WebsocetClient client) {
+
+                if (asciis.isEmpty()) {
+                        TextView tv = new TextView(ctx);
+                        tv.setText("No image found");
+                        return tv;
+                }
+
+                RecyclerView rvGallery = new RecyclerView(ctx);
+                GlobalGalleryAdapter adapter = new GlobalGalleryAdapter(asciis);
+
+                rvGallery.setLayoutManager(new GridLayoutManager(ctx, 2));
+                rvGallery.setAdapter(adapter);
+
+                final boolean[] isLoading = {false};
+
+                rvGallery.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
+
+                                GridLayoutManager layoutManager =
+                                        (GridLayoutManager) recyclerView.getLayoutManager();
+
+                                int lastVisible = layoutManager.findLastVisibleItemPosition();
+                                int total = layoutManager.getItemCount();
+
+                                final int PRELOAD_MARGIN = 10;
+
+                                if (!isLoading[0] && lastVisible >= total - PRELOAD_MARGIN) {
+
+                                        isLoading[0] = true;
+
+                                        JSONObject json = new JSONObject(Map.of(
+                                                "count", 15,
+                                                "author", "",
+                                                "artname", ""
+                                        ));
+
+                                        client.sendMessage(json, msg -> {
+                                                try {
+                                                        JSONArray array = new JSONArray(msg);
+                                                        ArrayList<FullAscii> newAsciis = FullAscii.fromJSONArray(array);
+
+                                                        recyclerView.post(() -> {
+                                                                adapter.addAsciis(newAsciis);
+                                                                isLoading[0] = false;
+                                                        });
+
+                                                } catch (Exception e) {
+                                                        throw new RuntimeException(e);
+                                                }
+                                        });
+                                }
+                        }
+                });
+
+                return rvGallery;
+        }
+
 }

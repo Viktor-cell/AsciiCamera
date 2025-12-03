@@ -19,9 +19,12 @@
         android:theme="@style/Theme.Asciicamera"
         tools:targetApi="31">
 
+        <activity android:name=".MainActivityGlobalGallery"
+            android:exported="false" />
+
         <activity
             android:name=".AccountActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".SignUpActivity"
@@ -32,7 +35,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivityLocalGallery"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

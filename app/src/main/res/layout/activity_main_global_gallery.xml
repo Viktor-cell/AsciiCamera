@@ -44,15 +44,16 @@
             android:src="@drawable/ic_account" />
     </LinearLayout>
 
-
-    <SearchView
-        android:id="@+id/searchBar"
+    <EditText
+        android:id="@+id/etSearchBar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@id/flGallery"
+        app:layout_constraintBottom_toTopOf="@id/flGallery"
         app:layout_constraintEnd_toEndOf="@id/flGallery"
-        app:layout_constraintBottom_toBottomOf="@id/llUser"
-        app:layout_constraintTop_toTopOf="@id/flGallery"
+        app:layout_constraintTop_toBottomOf="@id/llUser"
+        android:drawableStart="@drawable/ic_search"
         />
 
     <FrameLayout
@@ -66,7 +67,7 @@
         app:layout_constraintBottom_toTopOf="@id/btMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchBar" />
+        app:layout_constraintTop_toBottomOf="@id/etSearchBar" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btLocalGallery"

@@ -206,7 +206,7 @@ public class Utils {
                 return rvGallery;
         }
 
-        public static View createGlobalGallery(ArrayList<FullAscii> asciis, Context ctx, WebsocetClient client) {
+        public static View createGlobalGallery(ArrayList<FullAscii> asciis, Context ctx, WebsocetClient client, JSONObject queryParams) {
 
                 if (asciis.isEmpty()) {
                         TextView tv = new TextView(ctx);
@@ -239,13 +239,7 @@ public class Utils {
 
                                         isLoading[0] = true;
 
-                                        JSONObject json = new JSONObject(Map.of(
-                                                "count", 15,
-                                                "author", "",
-                                                "artname", ""
-                                        ));
-
-                                        client.sendMessage(json, msg -> {
+                                        client.sendMessage(queryParams, msg -> {
                                                 try {
                                                         JSONArray array = new JSONArray(msg);
                                                         ArrayList<FullAscii> newAsciis = FullAscii.fromJSONArray(array);

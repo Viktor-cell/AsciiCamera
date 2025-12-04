@@ -42,6 +42,7 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
                 String uriPath = uri.getLastPathSegment();
                 holder.img.setImageURI(uri);
                 holder.tv.setText(uriPath.substring(6, uriPath.length() - 4));
+
                 holder.btnTrash.setOnClickListener(view -> {
                         File f = new File(uri.getPath());
 

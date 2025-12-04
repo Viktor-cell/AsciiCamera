@@ -1,14 +1,16 @@
 package com.example.ascii_camera;
 
 import android.content.Intent;
-import androidx.core.content.ContextCompat;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -18,12 +20,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,6 +39,8 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
         private MutableLiveData<Uri> mldPhotoUri;
         private WebsocetClient client;
 
+        private EditText etSearchBar;
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -46,6 +50,8 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                 initUser();
                 handleConnectionIndicatorColor();
                 handleAccountButtonAndTextView();
+
+                etSearchBar = findViewById(R.id.etSearchBar);
 
                 Utils.getPermissions(this, this);
                 Utils.createTmpFolder(this, "tmpImageDir");
@@ -68,22 +74,42 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                         startActivity(new Intent(this, MainActivityLocalGallery.class));
                         overridePendingTransition(0, 0);
                 });
-                showGlobalGallery(layout);
-        }
 
-
-
-        private void showGlobalGallery(FrameLayout layout) {
-                layout.removeAllViews();
-                client = new WebsocetClient();
-
-                JSONObject json = new JSONObject(Map.of(
+                showGlobalGallery(layout, client, new JSONObject(Map.of(
                         "count", 15,
                         "author", "",
                         "artname", ""
-                ));
+                )));
 
-                client.sendMessage(json, msg -> {
+                etSearchBar.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                return;
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                return;
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                                showGlobalGallery(layout, client,new JSONObject(Map.of(
+                                        "count", 15,
+                                        "author", editable.toString().trim(),
+                                        "artname", editable.toString().trim()
+                                )));
+                        }
+                });
+
+        }
+
+
+        private void showGlobalGallery(FrameLayout layout,WebsocetClient client, JSONObject queryParams) {
+                layout.removeAllViews();
+
+
+                client.sendMessage(queryParams, msg -> {
                         try {
                                 Log.d("GOT_THIS", msg);
 
@@ -94,7 +120,7 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                                 Log.d("GOT_THIS", fullAsciis.toString());
 
                                 runOnUiThread(() -> {
-                                        View galleryView = Utils.createGlobalGallery(fullAsciis, MainActivityGlobalGallery.this, client);
+                                        View galleryView = Utils.createGlobalGallery(fullAsciis, MainActivityGlobalGallery.this, client, queryParams);
                                         layout.addView(galleryView);
                                 });
                         } catch (Exception e) {
@@ -152,7 +178,6 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
 
                 handler.post(connectionCheckRunnable);
         }
-
 
 
         private class isPhotoTakenObserver implements Observer<Uri> {

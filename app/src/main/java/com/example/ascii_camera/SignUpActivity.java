@@ -71,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 throw new RuntimeException(e);
                         }
 
-                        ServerUtils.post(json.toString(), "sign_up", new SignUpCallback());
+                        ServerUtils.post(json.toString(), "auth/signup", new SignUpCallback());
                 });
 
                 btBack.setOnClickListener(view -> {
@@ -103,9 +103,9 @@ public class SignUpActivity extends AppCompatActivity {
                         if (code != 200) {
                                 runOnUiThread(() -> {
                                         try {
-                                                String errorMsg = response.body() != null ? response.body().string() : "Unknown error";
+                                                String errorMsg = new JSONObject(response.body().string()).getString("error");
                                                 tilName.setError(errorMsg);
-                                        } catch (IOException e) {
+                                        } catch (Exception e) {
                                                 throw new RuntimeException(e);
                                         }
                                 });

@@ -21,14 +21,6 @@
         android:layout_margin="16dp"
         app:tint="@color/textPrimary" />
 
-    <View
-        android:id="@+id/vConnectionIndicator"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="end|top"
-        android:layout_margin="16dp"
-        android:background="@color/error" />
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/llContainer"
         android:layout_width="match_parent"

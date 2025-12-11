@@ -48,7 +48,6 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                 client = new WebsocetClient();
 
                 initUser();
-                handleConnectionIndicatorColor();
                 handleAccountButtonAndTextView();
 
                 etSearchBar = findViewById(R.id.etSearchBar);
@@ -76,26 +75,22 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                 });
 
                 showGlobalGallery(layout, client, new JSONObject(Map.of(
-                        "count", 15,
+                        "count", 8,
                         "author", "",
                         "artname", ""
                 )));
 
                 etSearchBar.addTextChangedListener(new TextWatcher() {
                         @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                return;
-                        }
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
                         @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                return;
-                        }
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
                         @Override
                         public void afterTextChanged(Editable editable) {
                                 showGlobalGallery(layout, client,new JSONObject(Map.of(
-                                        "count", 15,
+                                        "count", 8,
                                         "author", editable.toString().trim(),
                                         "artname", editable.toString().trim()
                                 )));
@@ -106,20 +101,14 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
 
 
         private void showGlobalGallery(FrameLayout layout,WebsocetClient client, JSONObject queryParams) {
-                layout.removeAllViews();
-
-
+                Log.d("AAAAAA", "showGlobalGallery");
                 client.sendMessage(queryParams, msg -> {
                         try {
-                                Log.d("GOT_THIS", msg);
-
                                 JSONArray jsonArray = new JSONArray(msg);
-                                Log.d("GOT_THIS", jsonArray.toString());
-
                                 ArrayList<FullAscii> fullAsciis = FullAscii.fromJSONArray(jsonArray);
-                                Log.d("GOT_THIS", fullAsciis.toString());
 
                                 runOnUiThread(() -> {
+                                        layout.removeAllViews();
                                         View galleryView = Utils.createGlobalGallery(fullAsciis, MainActivityGlobalGallery.this, client, queryParams);
                                         layout.addView(galleryView);
                                 });
@@ -154,31 +143,6 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                 }
 
         }
-
-        private void handleConnectionIndicatorColor() {
-                Handler handler = new Handler(Looper.getMainLooper());
-                View indicator = findViewById(R.id.vConnectionIndicator);
-
-                Runnable connectionCheckRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                                new Thread(() -> {
-                                        boolean isOnline = ServerUtils.isOnline();
-                                        GradientDrawable i = new GradientDrawable();
-
-                                        runOnUiThread(() -> {
-                                                i.setColor(isOnline ? ContextCompat.getColor(MainActivityGlobalGallery.this, R.color.success) : ContextCompat.getColor(MainActivityGlobalGallery.this, R.color.error));
-                                                indicator.setBackground(i);
-                                        });
-                                }).start();
-
-                                handler.postDelayed(this, 5000);
-                        }
-                };
-
-                handler.post(connectionCheckRunnable);
-        }
-
 
         private class isPhotoTakenObserver implements Observer<Uri> {
                 @Override

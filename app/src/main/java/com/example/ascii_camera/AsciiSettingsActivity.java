@@ -54,8 +54,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_settings_ascii);
 
-                handleConnectionIndicatorColor();
-
                 needsReset = new MutableLiveData<>(false);
                 initVars();
 
@@ -67,7 +65,15 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 loadSettingsIntoViews();
 
                 findViewById(R.id.btSaveImage).setOnClickListener(new OnSaveImageButtonClick());
-                findViewById(R.id.btUploadImage).setOnClickListener(new OnUploadButtonClick());
+
+                MaterialButton btUploadImage = findViewById(R.id.btUploadImage);
+                if (Utils.getStringFromPrefs("name", this).equals(Utils.LOGGED_OUT_USERNAME)) {
+                        btUploadImage.setEnabled(false);
+                        Toast.makeText(this, "To upload, you need to be logged in", Toast.LENGTH_LONG).show();
+                } else {
+                        findViewById(R.id.btUploadImage).setOnClickListener(new OnUploadButtonClick());
+                }
+
                 findViewById(R.id.btReturn).setOnClickListener(new OnReturnButtonClick());
 
                 needsReset.observe(this, does -> {
@@ -125,31 +131,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
                 avAscii.setChcAscii(asciiCreator.getChcArray());
                 avAscii.redraw();
-        }
-
-
-        private void handleConnectionIndicatorColor() {
-                Handler handler = new Handler(Looper.getMainLooper());
-                View indicator = findViewById(R.id.vConnectionIndicator);
-
-                Runnable connectionCheckRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                                new Thread(() -> {
-                                        boolean isOnline = ServerUtils.isOnline();
-                                        GradientDrawable i = new GradientDrawable();
-
-                                        runOnUiThread(() -> {
-                                                i.setColor(isOnline ? ContextCompat.getColor(AsciiSettingsActivity.this, R.color.success) : ContextCompat.getColor(AsciiSettingsActivity.this, R.color.error));
-                                                indicator.setBackground(i);
-                                        });
-                                }).start();
-
-                                handler.postDelayed(this, 5000);
-                        }
-                };
-
-                handler.post(connectionCheckRunnable);
         }
 
         private class OnUploadButtonClick implements View.OnClickListener {

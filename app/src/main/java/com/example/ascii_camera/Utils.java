@@ -70,7 +70,7 @@ public class Utils {
                         throw new RuntimeException(e);
                 }
 
-                ServerUtils.post(json.toString(), "add_image", new Callback() {
+                ServerUtils.post(json.toString(), "art/upload", new Callback() {
                         @Override
                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                 act.runOnUiThread(() -> {
@@ -227,13 +227,15 @@ public class Utils {
                         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                                 super.onScrolled(recyclerView, dx, dy);
 
+                                if (dy < 0 ) return;
+
                                 GridLayoutManager layoutManager =
                                         (GridLayoutManager) recyclerView.getLayoutManager();
 
                                 int lastVisible = layoutManager.findLastVisibleItemPosition();
                                 int total = layoutManager.getItemCount();
 
-                                final int PRELOAD_MARGIN = 10;
+                                final int PRELOAD_MARGIN = 2;
 
                                 if (!isLoading[0] && lastVisible >= total - PRELOAD_MARGIN) {
 

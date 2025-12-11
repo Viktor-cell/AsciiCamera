@@ -40,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_login);
 
-                handleConnectionIndicatorColor();
                 initVars();
 
                 btLogin.setOnClickListener(view -> {
@@ -69,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                                 throw new RuntimeException(e);
                         }
 
-                        ServerUtils.post(json.toString(), "log_in", new LoginCallback());
+                        ServerUtils.post(json.toString(), "auth/login", new LoginCallback());
                 });
 
                 btSignUp.setOnClickListener(view -> {
@@ -79,31 +78,6 @@ public class LoginActivity extends AppCompatActivity {
                 btBack.setOnClickListener(view -> {
                         startActivity(new Intent(LoginActivity.this, MainActivityLocalGallery.class));
                 });
-        }
-
-        private void handleConnectionIndicatorColor() {
-                Handler handler = new Handler(Looper.getMainLooper());
-                View indicator = findViewById(R.id.vConnectionIndicator);
-
-                Runnable connectionCheckRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                                new Thread(() -> {
-                                        boolean isOnline = ServerUtils.isOnline();
-                                        GradientDrawable i = new GradientDrawable();
-
-                                        runOnUiThread(() -> {
-                                                i.setColor(isOnline ? ContextCompat.getColor(LoginActivity.this, R.color.success                )
-                                                        : ContextCompat.getColor(LoginActivity.this, R.color.error));
-                                                indicator.setBackground(i);
-                                        });
-                                }).start();
-
-                                handler.postDelayed(this, 5000);
-                        }
-                };
-
-                handler.post(connectionCheckRunnable);
         }
 
         private void initVars() {
@@ -129,10 +103,10 @@ public class LoginActivity extends AppCompatActivity {
                         if (code != 200) {
                                 runOnUiThread(() -> {
                                         try {
-                                                String errorMsg = response.body() != null ? response.body().string() : "Unknown error";
+                                                String errorMsg = new JSONObject(response.body().string()).getString("error");
                                                 tilName.setError(errorMsg);
                                                 tilPassword.setError(errorMsg);
-                                        } catch (IOException e) {
+                                        } catch (Exception e) {
                                                 throw new RuntimeException(e);
                                         }
                                 });

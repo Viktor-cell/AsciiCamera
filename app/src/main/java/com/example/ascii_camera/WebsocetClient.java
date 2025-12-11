@@ -15,7 +15,7 @@ import okio.ByteString;
 
 public class WebsocetClient {
 
-        public static final String WEBSOCET_URL = "ws://" + ServerUtils.SERVER_SOCKET + "/ws";
+        public static final String WEBSOCET_URL = "ws://" + ServerUtils.SERVER_SOCKET + "/art/stream";
         private static final String TAG = "WebSocketClient";
         private final OkHttpClient client = new OkHttpClient();
         private final HashMap<Integer, WebsocketCallback> pendingRequests = new HashMap<>();

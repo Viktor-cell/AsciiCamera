@@ -30,7 +30,7 @@ public class AccountActivity extends AppCompatActivity {
 
                 btLogout.setOnClickListener(view -> {
                         Utils.editStringInPrefs("name", Utils.LOGGED_OUT_USERNAME, AccountActivity.this);
-                        startActivity(new Intent(AccountActivity.this, MainActivityLocalGallery.class));
+                        startActivity(new Intent(AccountActivity.this, MainActivityGlobalGallery.class));
                 });
         }
 

@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                         Utils.addStringToPrefs("name", name, LoginActivity.this);
 
 
-                        startActivity(new Intent(LoginActivity.this, MainActivityLocalGallery.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivityGlobalGallery.class));
                 }
         }
 }

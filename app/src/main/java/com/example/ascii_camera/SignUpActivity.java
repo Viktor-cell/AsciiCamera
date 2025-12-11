@@ -114,7 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                         String name = etName.getText().toString().trim();
                         Utils.addStringToPrefs("name", name, SignUpActivity.this);
-                        startActivity(new Intent(SignUpActivity.this, MainActivityLocalGallery.class));
+                        startActivity(new Intent(SignUpActivity.this, MainActivityGlobalGallery.class));
                 }
         }
 }

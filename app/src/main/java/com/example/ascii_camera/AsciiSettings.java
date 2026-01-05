@@ -22,26 +22,51 @@ public class AsciiSettings implements Parcelable {
         };
         private static final int DEFAULT_MIN_MAG = 400;
 
+        private static final boolean DEFAULT_INVERTED = false;
+
+        private static final boolean DEFAULT_JUST_LETTERS = false;
+
         private String charset;
         private int fontSize; // How many pixels for one letter
         private boolean monochrome;
         private boolean edges;
+        private boolean inverted;
+        private boolean justLetters;
+
+        public boolean isJustLetters() {
+                return justLetters;
+        }
+
+        public void setJustLetters(boolean justLetters) {
+                this.justLetters = justLetters;
+        }
+
+        public boolean isInverted() {
+                return inverted;
+        }
+
+        public void setInverted(boolean inverted) {
+                this.inverted = inverted;
+        }
+
         private int minMag;
 
-        public AsciiSettings(String charset, int fontSize, boolean monochrome, boolean edges, int minMag) {
-                setAll(charset, fontSize, monochrome, edges, minMag);
+        public AsciiSettings(String charset, int fontSize, boolean monochrome, boolean inverted, boolean justLetters,  boolean edges, int minMag) {
+                setAll(charset, fontSize, monochrome, inverted, justLetters, edges, minMag);
         }
 
         protected AsciiSettings(Parcel in) {
                 charset = in.readString();
                 fontSize = in.readInt();
                 monochrome = in.readByte() != 0;
+                inverted = in.readByte() != 0;
+                justLetters = in.readByte() != 0;
                 edges = in.readByte() != 0;
                 minMag = in.readInt();
         }
 
         public static AsciiSettings defaultValues() {
-                return new AsciiSettings(DEFAULT_CHARSET, DEFAULT_FONT_SIZE, DEFAULT_MONOCHROME, DEFAULT_EDGES, DEFAULT_MIN_MAG);
+                return new AsciiSettings(DEFAULT_CHARSET, DEFAULT_FONT_SIZE, DEFAULT_MONOCHROME, DEFAULT_INVERTED, DEFAULT_JUST_LETTERS, DEFAULT_EDGES, DEFAULT_MIN_MAG);
         }
 
         @Override
@@ -49,6 +74,8 @@ public class AsciiSettings implements Parcelable {
                 dest.writeString(charset);
                 dest.writeInt(fontSize);
                 dest.writeByte((byte) (monochrome ? 1 : 0));
+                dest.writeByte((byte) (inverted ? 1 : 0));
+                dest.writeByte((byte) (justLetters ? 1 : 0));
                 dest.writeByte((byte) (edges ? 1 : 0));
                 dest.writeInt(minMag);
         }
@@ -98,16 +125,18 @@ public class AsciiSettings implements Parcelable {
                 this.minMag = minMag;
         }
 
-        public void setAll(String charset, int fontSize, boolean monochrome, boolean edges, int minMag) {
+        public void setAll(String charset, int fontSize, boolean monochrome, boolean inverted, boolean justLetters, boolean edges, int minMag) {
                 setCharset(charset);
                 setFontSize(fontSize);
                 setMonochrome(monochrome);
+                setInverted(inverted);
+                setJustLetters(justLetters);
                 setEdges(edges);
                 setMinMag(minMag);
         }
 
         public void set(AsciiSettings other) {
-                setAll(other.getCharset(), other.getFontSize(), other.isMonochrome(), other.isEdges(), other.getMinMag());
+                setAll(other.getCharset(), other.getFontSize(), other.isMonochrome(), other.isInverted(), other.isJustLetters(), other.isEdges(), other.getMinMag());
         }
 
         @Override

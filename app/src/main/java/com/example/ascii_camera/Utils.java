@@ -108,10 +108,11 @@ public class Utils {
 
         }
 
-        public static void createTmpFolder(Context ctx, String name) {
+        public static String createTmpFolder(Context ctx, String name) {
                 File dir = ctx.getCacheDir();
                 File tmpImage = new File(dir + "/" + name);
                 if (!tmpImage.exists()) tmpImage.mkdir();
+                return tmpImage.getPath().toString();
         }
 
         public static void cleanTmpFolder(Context ctx, String name) {

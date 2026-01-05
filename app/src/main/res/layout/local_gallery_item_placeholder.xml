@@ -7,7 +7,7 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/surface">
+    app:cardBackgroundColor="@color/dark_gray">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,11 +28,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:textColor="@color/textPrimary"
+            android:textColor="@color/pure_white"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            app:layout_constraintTop_toBottomOf="@id/image"
+            app:layout_constraintTop_toBottomOf="@+id/image"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnTrash"
+            app:layout_constraintEnd_toStartOf="@+id/btnTrash"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Image Name" />
 
@@ -42,8 +42,8 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_trash"
-            app:tint="@color/error"
-            app:layout_constraintTop_toBottomOf="@id/image"
+            app:tint="@color/system_red"
+            app:layout_constraintTop_toBottomOf="@+id/image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 

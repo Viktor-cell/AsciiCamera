@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".AccountActivity"
-    android:background="@color/background">
+    android:background="@color/almost_black">
 
     <ImageButton
         android:id="@+id/btBack"
@@ -18,14 +18,14 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_gravity="start|top"
         android:layout_margin="16dp"
-        app:tint="@color/textPrimary" />
+        app:tint="@color/gray" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface">
+        app:cardBackgroundColor="@color/dark_gray">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Your Name"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/pure_white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -48,8 +48,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/textPrimary"
+                android:backgroundTint="@color/system_red"
+                android:textColor="@color/pure_white"
                 android:text="Log Out"/>
 
         </LinearLayout>

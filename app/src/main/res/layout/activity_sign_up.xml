@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".SignUpActivity"
-    android:background="@color/background">
+    android:background="@color/almost_black">
 
     <ImageButton
         android:id="@+id/btBack"
@@ -18,14 +18,14 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_gravity="start|top"
         android:layout_margin="16dp"
-        app:tint="@color/textPrimary" />
+        app:tint="@color/gray" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface">
+        app:cardBackgroundColor="@color/dark_gray">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,14 +38,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
-                android:textColorHint="@color/textSecondary"
+                android:textColorHint="@color/gray"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/textPrimary" />
+                    android:textColor="@color/pure_white" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Password"
-                android:textColorHint="@color/textSecondary"
+                android:textColorHint="@color/gray"
                 app:passwordToggleEnabled="true"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -64,7 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textColor="@color/textPrimary" />
+                    android:textColor="@color/pure_white" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Confirm Password"
-                android:textColorHint="@color/textSecondary"
+                android:textColorHint="@color/gray"
                 app:passwordToggleEnabled="true"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -83,7 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textColor="@color/textPrimary" />
+                    android:textColor="@color/pure_white" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,8 +93,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Sign Up"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/textPrimary"
+                android:backgroundTint="@color/system_blue"
+                android:textColor="@color/pure_white"
                 android:padding="12dp"/>
 
         </LinearLayout>

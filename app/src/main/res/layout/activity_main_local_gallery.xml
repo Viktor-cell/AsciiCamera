@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivityLocalGallery"
-    android:background="@color/background">
+    android:background="@color/almost_black">
 
 
     <FrameLayout
@@ -35,8 +35,8 @@
         app:iconPadding="0dp"
         app:iconGravity="textStart"
         app:icon="@drawable/ic_home"
-        app:iconTint="@color/textPrimary"
-        app:backgroundTint="@color/primary"
+        app:iconTint="@color/pure_white"
+        app:backgroundTint="@color/system_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btMenu"
@@ -54,9 +54,9 @@
         android:layout_margin="16dp"
         app:iconPadding="0dp"
         app:iconGravity="textStart"
-        app:icon="@drawable/ic_add"
-        app:iconTint="@color/textPrimary"
-        app:backgroundTint="@color/primary"
+        app:icon="@drawable/ic_plus"
+        app:iconTint="@color/pure_white"
+        app:backgroundTint="@color/system_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btLocalGallery"
         app:layout_constraintEnd_toStartOf="@id/btGlobalGallery"
@@ -74,8 +74,8 @@
         app:iconPadding="0dp"
         app:iconGravity="textStart"
         app:icon="@drawable/ic_global"
-        app:iconTint="@color/textPrimary"
-        app:backgroundTint="@color/primary"
+        app:iconTint="@color/pure_white"
+        app:backgroundTint="@color/system_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btMenu"
         app:layout_constraintEnd_toEndOf="parent"

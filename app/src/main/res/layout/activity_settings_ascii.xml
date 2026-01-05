@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AsciiSettingsActivity"
-    android:background="@color/background">
+    android:background="@color/almost_black">
 
     <com.example.ascii_camera.AsciiView
         android:id="@+id/avAscii"
@@ -26,8 +26,8 @@
         app:srcCompat="@drawable/ic_settings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:backgroundTint="@color/surface"
-        app:tint="@color/textPrimary"/>
+        app:backgroundTint="@color/system_blue"
+        app:tint="@color/pure_white"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/llSettingContainer"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:visibility="invisible"
-        app:cardBackgroundColor="@color/surface"
+        app:cardBackgroundColor="@color/dark_gray"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,14 +50,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/textSecondary"
+                android:textColorHint="@color/gray"
                 android:hint="Character set">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCharset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/textPrimary"/>
+                    android:textColor="@color/pure_white"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/textSecondary"
+                android:textColor="@color/gray"
                 android:text="Font size" />
 
             <SeekBar
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/textSecondary"
+                android:textColor="@color/gray"
                 android:text="Minimal magnitude" />
 
             <SeekBar
@@ -91,19 +91,35 @@
                 android:min="1" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/chbMonochrome"
+                android:id="@+id/swMonochrome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/pure_white"
                 android:text="Monochrome" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/chbEdges"
+                android:id="@+id/swEdges"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/pure_white"
                 android:text="Edges" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/swInverted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pure_white"
+                android:text="Inverted" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/swJustLetters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pure_white"
+                android:text="Just letters" />
+
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -122,7 +138,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/primary"
+            android:textColor="@color/system_blue"
             android:text="Return" />
 
         <com.google.android.material.button.MaterialButton
@@ -132,8 +148,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/secondary"
-            android:textColor="@color/textPrimary"
+            android:backgroundTint="@color/system_orange"
+            android:textColor="@color/pure_white"
             android:text="Upload" />
 
         <com.google.android.material.button.MaterialButton
@@ -141,8 +157,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/primary"
-            android:textColor="@color/textPrimary"
+            android:backgroundTint="@color/system_green"
+            android:textColor="@color/pure_white"
             android:text="Save" />
     </LinearLayout>
 

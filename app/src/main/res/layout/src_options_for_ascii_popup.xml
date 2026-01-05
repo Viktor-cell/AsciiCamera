@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/dark_gray">
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:padding="25dp"
+        >
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mbtSelectPhoto"
+            android:text="Select phot"
+            android:gravity="center"
+            android:textColor="@color/pure_white"
+            android:backgroundTint="@color/system_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mbtTakePhoto"
+            android:text="Take photo"
+            android:textColor="@color/pure_white"
+            android:backgroundTint="@color/system_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mbtAddUrl"
+            android:text="Give URL"
+            android:textColor="@color/pure_white"
+            android:backgroundTint="@color/system_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

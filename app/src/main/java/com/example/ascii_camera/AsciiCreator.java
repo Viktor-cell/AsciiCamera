@@ -83,7 +83,7 @@ public class AsciiCreator implements Parcelable {
                 this.chcArray = new CharactersColorsArray(bmpScaled.getWidth(), bmpScaled.getHeight());
         }
 
-        public void initBmpIfNeeded(Context context) {
+        public void createBitmapsIfNeeded(Context context) {
                 if (bmpOriginal != null) return;
 
                 try {
@@ -105,26 +105,34 @@ public class AsciiCreator implements Parcelable {
                         true);
         }
 
-        public void generateColoredText() {
+        public void generateColoredText(Context context) {
                 int charIndex;
                 for (int y = 0; y < chcArray.getHeight(); y++) {
                         for (int x = 0; x < chcArray.getWidth(); x++) {
 
-                                // create array
                                 charIndex = (int) (calculateLightness(bmpScaled.getPixel(x, y)) / 255f * settings.getCharset().length());
                                 chcArray.setCharacter(x, y, settings.getCharset().charAt(charIndex));
 
+                                int color = bmpScaled.getPixel(x, y);
+                                int r = Color.red(color);
+                                int g = Color.green(color);
+                                int b =  Color.blue(color);
+
                                 if (settings.isMonochrome()) {
-                                        int shade = calculateLightness(bmpScaled.getPixel(x, y));
-                                        int color = Color.rgb(shade, shade, shade);
-                                        chcArray.setColor(x, y, color);
-                                } else {
-                                        int color = bmpScaled.getPixel(x, y);
-                                        chcArray.setColor(x, y, color);
+                                        r = g = b = calculateLightness(color);
                                 }
-                                // scaling gets done in createBmpScaled
-                                // min mag in apply sobel
-                                // charset in this function
+
+                                if (settings.isInverted()) {
+                                        r = 255 - r;
+                                        g = 255 - g;
+                                        b = 255 - b;
+                                }
+
+                                if (settings.isJustLetters()) {
+                                        r = g = b = 255;
+                                }
+
+                                chcArray.setColor(x, y, Color.rgb(r, g, b));
                         }
                 }
 
@@ -132,7 +140,6 @@ public class AsciiCreator implements Parcelable {
                         applySobel();
                 }
         }
-
         private void applySobel() {
                 int[][] kernelGx = {
                         {-1, 0, 1},
@@ -169,7 +176,7 @@ public class AsciiCreator implements Parcelable {
                                                 magX += lightness * weightGx;
                                                 magY += lightness * weightGy;
                                         }
-                                }
+                                 }
 
                                 double magnitudeSquared = magX * magX + magY * magY;
 
@@ -190,7 +197,7 @@ public class AsciiCreator implements Parcelable {
         }
 
         private char getEdgeCharacter(double magX, double magY) {
-                double angle = Math.toDegrees(Math.atan2(magY, magX));
+                double angle = Math.toDegrees(Math.atan2(magY, magY));
 
                 if ((angle > -22.5 && angle <= 22.5) || angle <= -157.5 || angle > 157.5) {
                         return '|';

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -71,7 +72,7 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
 
                         img.setImageURI(imageUris.get(position));
                         alert.show();
-                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 });
         }
 

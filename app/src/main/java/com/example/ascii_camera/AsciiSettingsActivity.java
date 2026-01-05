@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 
 import androidx.core.content.ContextCompat;
-import android.graphics.drawable.GradientDrawable;
+
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -40,9 +38,11 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         private TextInputEditText etCharset;
         private SeekBar sbFontSize;
         private SeekBar sbMinMag;
-        private SwitchMaterial chbMonochrome;
-        private SwitchMaterial chbEdges;
-        private MaterialCardView llSettingContainer;
+        private SwitchMaterial swMonochrome;
+        private SwitchMaterial swInverted;
+        private SwitchMaterial swJustLetters;
+        private SwitchMaterial swbEdges;
+        private MaterialCardView mcvSettingContainer;
         private TextView tvFontSize;
         private TextView tvMinMag;
         private AsciiCreator asciiCreator;
@@ -59,7 +59,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
                 asciiCreator = getIntent().getParcelableExtra("Ascii");
                 assert asciiCreator != null;
-                asciiCreator.initBmpIfNeeded(this);
+                asciiCreator.createBitmapsIfNeeded(this);
 
                 setupListeners();
                 loadSettingsIntoViews();
@@ -81,8 +81,10 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                                 asciiCreator.setSettings(new AsciiSettings(
                                         etCharset.getText().toString(),
                                         sbFontSize.getProgress(),
-                                        chbMonochrome.isChecked(),
-                                        chbEdges.isChecked(),
+                                        swMonochrome.isChecked(),
+                                        swInverted.isChecked(),
+                                        swJustLetters.isChecked(),
+                                        swbEdges.isChecked(),
                                         sbMinMag.getProgress()
                                 ));
                                 presentAscii();
@@ -97,9 +99,11 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 etCharset = findViewById(R.id.etCharset);
                 sbFontSize = findViewById(R.id.sbFontSize);
                 sbMinMag = findViewById(R.id.sbMinMag);
-                chbMonochrome = findViewById(R.id.chbMonochrome);
-                chbEdges = findViewById(R.id.chbEdges);
-                llSettingContainer = findViewById(R.id.llSettingContainer);
+                swMonochrome = findViewById(R.id.swMonochrome);
+                swInverted = findViewById(R.id.swInverted);
+                swJustLetters = findViewById(R.id.swJustLetters);
+                swbEdges = findViewById(R.id.swEdges);
+                mcvSettingContainer = findViewById(R.id.llSettingContainer);
                 tvFontSize = findViewById(R.id.tvFontSize);
                 tvMinMag = findViewById(R.id.tvMinMag);
                 avAscii = findViewById(R.id.avAscii);
@@ -110,25 +114,27 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 btSaveImage.setOnClickListener(new OnSaveImageButtonClick());
                 sbFontSize.setOnSeekBarChangeListener(new FontSizeTextAdjust());
                 sbMinMag.setOnSeekBarChangeListener(new MinMagTextAdjust());
-                chbEdges.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
+                swbEdges.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
                 etCharset.addTextChangedListener(new OnCharsetChange());
-                chbMonochrome.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
+                swMonochrome.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
+                swInverted.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
+                swJustLetters.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
         }
 
         private void loadSettingsIntoViews() {
                 etCharset.setText(asciiCreator.getSettings().getCharset());
                 sbFontSize.setProgress(asciiCreator.getSettings().getFontSize());
                 sbMinMag.setProgress(asciiCreator.getSettings().getMinMag());
-                chbEdges.setChecked(asciiCreator.getSettings().isEdges());
-                chbMonochrome.setChecked(asciiCreator.getSettings().isMonochrome());
+                swbEdges.setChecked(asciiCreator.getSettings().isEdges());
+                swMonochrome.setChecked(asciiCreator.getSettings().isMonochrome());
+                swInverted.setChecked(asciiCreator.getSettings().isInverted());
+                swJustLetters.setChecked(asciiCreator.getSettings().isJustLetters());
                 tvFontSize.setText("Font size: " + sbFontSize.getProgress());
                 tvMinMag.setText("Minimal magnitude: " + sbMinMag.getProgress());
         }
 
         private void presentAscii() {
-                asciiCreator.initBmpIfNeeded(this);
-                asciiCreator.generateColoredText();
-
+                asciiCreator.generateColoredText(this);
                 avAscii.setChcAscii(asciiCreator.getChcArray());
                 avAscii.redraw();
         }
@@ -139,6 +145,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                         CharactersColorsArray chcArray = avAscii.getChcAscii();
                         TextInputEditText etFileName = new TextInputEditText(AsciiSettingsActivity.this);
                         etFileName.setHint("Art name");
+                        etFileName.setHintTextColor(ContextCompat.getColor(AsciiSettingsActivity.this, R.color.gray));
 
                         AlertDialog alert = new AlertDialog.Builder(AsciiSettingsActivity.this)
                                 .setMessage("Put the name of an art")
@@ -198,6 +205,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                         Bitmap asciiAsBitmap = avAscii.getAsciiAsBitmap(true);
                         TextInputEditText etFileName = new TextInputEditText(AsciiSettingsActivity.this);
                         etFileName.setHint("Art name");
+                        etFileName.setHintTextColor(ContextCompat.getColor(AsciiSettingsActivity.this, R.color.gray));
 
                         AlertDialog alert = new AlertDialog.Builder(AsciiSettingsActivity.this)
                                 .setMessage("Put the name of an art")
@@ -263,10 +271,10 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         private class OnSettingsButtonClick implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
-                        if (llSettingContainer.getVisibility() == View.VISIBLE) {
-                                llSettingContainer.setVisibility(View.INVISIBLE);
+                        if (mcvSettingContainer.getVisibility() == View.VISIBLE) {
+                                mcvSettingContainer.setVisibility(View.INVISIBLE);
                         } else {
-                                llSettingContainer.setVisibility(View.VISIBLE);
+                                mcvSettingContainer.setVisibility(View.VISIBLE);
                         }
                 }
         }

@@ -14,7 +14,7 @@ import okhttp3.Response;
 
 public class ServerUtils {
 
-        public static final String SERVER_SOCKET = "10.23.175.81:8080";
+        public static final String SERVER_SOCKET = "10.28.119.81:8080";
         public static final String SERVER_URL = "http://" + SERVER_SOCKET;
         private static final OkHttpClient client = new OkHttpClient.Builder()
                 .callTimeout(10, TimeUnit.SECONDS)

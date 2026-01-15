@@ -48,7 +48,7 @@ public class MainActivityLocalGallery extends AppCompatActivity {
                 setContentView(R.layout.activity_main_local_gallery);
 
                 Utils.getPermissions(this, this);
-                createTmpFolder(this, "tmpImageDir");
+                Utils.createTmpFolder(this, "tmpImageDir");
                 Utils.cleanTmpFolder(this, "tmpImageDir");
 
                 findViewById(R.id.btMenu).setOnClickListener(new onMenuClick());
@@ -95,8 +95,6 @@ public class MainActivityLocalGallery extends AppCompatActivity {
                 private final LayoutInflater inflater = MainActivityLocalGallery.this.getLayoutInflater();
 
                 private void showMenu() {
-                        if (currentMenuLayout != null) return; // Already showing
-
                         ViewGroup root = MainActivityLocalGallery.this.findViewById(R.id.rootLayout);
                         ViewGroup menuLayout = (ViewGroup) inflater.inflate(R.layout.src_options_for_ascii_popup, root, false);
 
@@ -119,16 +117,13 @@ public class MainActivityLocalGallery extends AppCompatActivity {
                 }
 
                 private void hideMenu() {
-                        if (currentMenuLayout != null) {
-                                ViewGroup root = MainActivityLocalGallery.this.findViewById(R.id.rootLayout);
-                                root.removeView(currentMenuLayout);
-                                currentMenuLayout = null;
-                                setButtonStateAdd();
-                        }
+                        ViewGroup root = MainActivityLocalGallery.this.findViewById(R.id.rootLayout);
+                        root.removeView(currentMenuLayout);
+                        currentMenuLayout = null;
+                        setButtonStateAdd();
                 }
 
                 private void showEnterUrl() {
-                        if (currentEnterUrlLayout != null) return; // Already showing
 
                         ViewGroup root = MainActivityLocalGallery.this.findViewById(R.id.rootLayout);
                         ViewGroup enterUrlLayout = (ViewGroup) inflater.inflate(R.layout.enter_url, root, false);
@@ -152,12 +147,10 @@ public class MainActivityLocalGallery extends AppCompatActivity {
                 }
 
                 private void hideEnterUrl() {
-                        if (currentEnterUrlLayout != null) {
-                                ViewGroup root = MainActivityLocalGallery.this.findViewById(R.id.rootLayout);
-                                root.removeView(currentEnterUrlLayout);
-                                currentEnterUrlLayout = null;
-                                setButtonStateAdd();
-                        }
+                        ViewGroup root = MainActivityLocalGallery.this.findViewById(R.id.rootLayout);
+                        root.removeView(currentEnterUrlLayout);
+                        currentEnterUrlLayout = null;
+                        setButtonStateAdd();
                 }
 
                 private void setButtonStateClose() {
@@ -347,7 +340,6 @@ public class MainActivityLocalGallery extends AppCompatActivity {
                 public void onClick(View view) {
                         btMenu = MainActivityLocalGallery.this.findViewById(R.id.btMenu);
 
-                        // Toggle menu: if already open, close it; otherwise open it
                         if (currentMenuLayout != null) {
                                 hideMenu();
                         } else if (currentEnterUrlLayout != null) {

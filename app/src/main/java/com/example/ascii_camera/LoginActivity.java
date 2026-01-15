@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
                 btBack.setOnClickListener(view -> {
-                        startActivity(new Intent(LoginActivity.this, MainActivityLocalGallery.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivityGlobalGallery.class));
                 });
         }
 

@@ -15,14 +15,15 @@ import okio.ByteString;
 
 public class WebsocetClient {
 
-        public static final String WEBSOCET_URL = "ws://" + ServerUtils.SERVER_SOCKET + "/art/stream";
+        public final String websocketUrl;
         private static final String TAG = "WebSocketClient";
         private final OkHttpClient client = new OkHttpClient();
         private final HashMap<Integer, WebsocketCallback> pendingRequests = new HashMap<>();
         private Integer requestID = 0;
         private WebSocket ws;
 
-        public WebsocetClient() {
+        public WebsocetClient(String url) {
+                websocketUrl = "ws://" + url + "/art/stream";
                 start();
         }
 
@@ -55,7 +56,7 @@ public class WebsocetClient {
         }
 
         public void start() {
-                Request req = new Request.Builder().url(WEBSOCET_URL).build();
+                Request req = new Request.Builder().url(websocketUrl).build();
                 WebSocketListener wsl = new WebSocketListener() {
                         @Override
                         public void onOpen(WebSocket webSocket, Response response) {

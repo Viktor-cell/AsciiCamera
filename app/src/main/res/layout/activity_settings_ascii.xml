@@ -75,20 +75,7 @@
                 android:max="150"
                 android:min="3" />
 
-            <TextView
-                android:id="@+id/tvMinMag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/gray"
-                android:text="Minimal magnitude" />
 
-            <SeekBar
-                android:id="@+id/sbMinMag"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="1000"
-                android:min="1" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/swMonochrome"
@@ -98,12 +85,7 @@
                 android:textColor="@color/pure_white"
                 android:text="Monochrome" />
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/swEdges"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/pure_white"
-                android:text="Edges" />
+
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/swInverted"
@@ -118,6 +100,28 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/pure_white"
                 android:text="Just letters" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/swEdges"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pure_white"
+                android:text="Edges" />
+
+            <TextView
+                android:id="@+id/tvMinMag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/gray"
+                android:text="Minimal magnitude" />
+
+            <SeekBar
+                android:id="@+id/sbMinMag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="1000"
+                android:min="1" />
 
 
         </LinearLayout>

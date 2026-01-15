@@ -111,7 +111,6 @@ public class AsciiCreator implements Parcelable {
                         for (int x = 0; x < chcArray.getWidth(); x++) {
 
                                 charIndex = (int) (calculateLightness(bmpScaled.getPixel(x, y)) / 255f * settings.getCharset().length());
-                                chcArray.setCharacter(x, y, settings.getCharset().charAt(charIndex));
 
                                 int color = bmpScaled.getPixel(x, y);
                                 int r = Color.red(color);
@@ -126,12 +125,14 @@ public class AsciiCreator implements Parcelable {
                                         r = 255 - r;
                                         g = 255 - g;
                                         b = 255 - b;
+                                        charIndex = settings.getCharset().length() - 1 - charIndex;
                                 }
 
                                 if (settings.isJustLetters()) {
-                                        r = g = b = 255;
+                                        r = g = b = 155;
                                 }
 
+                                chcArray.setCharacter(x, y, settings.getCharset().charAt(charIndex));
                                 chcArray.setColor(x, y, Color.rgb(r, g, b));
                         }
                 }

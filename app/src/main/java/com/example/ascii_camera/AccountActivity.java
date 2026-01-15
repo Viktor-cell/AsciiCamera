@@ -25,7 +25,7 @@ public class AccountActivity extends AppCompatActivity {
                 tvName.setText(Utils.getStringFromPrefs("name", AccountActivity.this));
 
                 btBack.setOnClickListener(view -> {
-                        startActivity(new Intent(AccountActivity.this, MainActivityLocalGallery.class));
+                        startActivity(new Intent(AccountActivity.this, MainActivityGlobalGallery.class));
                 });
 
                 btLogout.setOnClickListener(view -> {

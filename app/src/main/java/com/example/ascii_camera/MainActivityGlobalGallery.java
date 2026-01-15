@@ -1,5 +1,6 @@
 package com.example.ascii_camera;
 
+import static androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
 import static com.example.ascii_camera.Utils.createTmpFolder;
 
 import android.content.Intent;
@@ -56,14 +57,12 @@ import okhttp3.Response;
 public class MainActivityGlobalGallery extends AppCompatActivity {
         private MutableLiveData<Uri> mldPhotoUri;
         private WebsocetClient client;
-
         private EditText etSearchBar;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main_global_gallery);
-                client = new WebsocetClient();
 
                 initUser();
                 handleAccountButtonAndTextView();
@@ -92,11 +91,14 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                 });
 
+                client = null;
+                client = new WebsocetClient(ServerUtils.SERVER_SOCKET);
+
                 showGlobalGallery(layout, client, new JSONObject(Map.of(
                         "count", 8,
                         "author", "",
                         "artname", ""
-                )));
+                        )));
 
                 etSearchBar.addTextChangedListener(new TextWatcher() {
                         @Override
@@ -114,12 +116,10 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                                 )));
                         }
                 });
-
         }
 
 
         private void showGlobalGallery(FrameLayout layout,WebsocetClient client, JSONObject queryParams) {
-                Log.d("AAAAAA", "showGlobalGallery");
                 client.sendMessage(queryParams, msg -> {
                         try {
                                 JSONArray jsonArray = new JSONArray(msg);
@@ -190,10 +190,10 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                                 ConstraintLayout.LayoutParams.WRAP_CONTENT
                         );
 
-                        params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-                        params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-                        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-                        params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+                        params.startToStart = PARENT_ID;
+                        params.endToEnd = PARENT_ID;
+                        params.topToTop = PARENT_ID;
+                        params.bottomToBottom = PARENT_ID;
 
                         menuLayout.setLayoutParams(params);
                         root.addView(menuLayout);
@@ -223,10 +223,10 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                                 ConstraintLayout.LayoutParams.WRAP_CONTENT
                         );
 
-                        params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-                        params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-                        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-                        params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+                        params.startToStart = PARENT_ID;
+                        params.endToEnd = PARENT_ID;
+                        params.topToTop = PARENT_ID;
+                        params.bottomToBottom = PARENT_ID;
 
                         enterUrlLayout.setLayoutParams(params);
                         root.addView(enterUrlLayout);

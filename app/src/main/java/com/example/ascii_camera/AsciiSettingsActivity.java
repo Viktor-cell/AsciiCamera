@@ -131,12 +131,31 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 swJustLetters.setChecked(asciiCreator.getSettings().isJustLetters());
                 tvFontSize.setText("Font size: " + sbFontSize.getProgress());
                 tvMinMag.setText("Minimal magnitude: " + sbMinMag.getProgress());
+
+                updateMinMagVisibility();
         }
 
         private void presentAscii() {
                 asciiCreator.generateColoredText(this);
                 avAscii.setChcAscii(asciiCreator.getChcArray());
                 avAscii.redraw();
+        }
+
+        private void updateMinMagVisibility() {
+                int visibility = swbEdges.isChecked() ? View.VISIBLE : View.GONE;
+                tvMinMag.setVisibility(visibility);
+                sbMinMag.setVisibility(visibility);
+        }
+
+        private class OnCheckBoxCheckChange implements CompoundButton.OnCheckedChangeListener {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // Update visibility when edges switch changes
+                        if (buttonView.getId() == R.id.swEdges) {
+                                updateMinMagVisibility();
+                        }
+                        needsReset.setValue(true);
+                }
         }
 
         private class OnUploadButtonClick implements View.OnClickListener {
@@ -257,13 +276,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                         if (s.toString().isEmpty()) {
                                 etCharset.setText(" ");
                         }
-                        needsReset.setValue(true);
-                }
-        }
-
-        private class OnCheckBoxCheckChange implements CompoundButton.OnCheckedChangeListener {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         needsReset.setValue(true);
                 }
         }

@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -105,22 +106,25 @@ public class Utils {
                 });
         }
 
-        public static void saveLocaly(String fileName, Bitmap bmp, Context ctx) {
+        public static Uri saveLocaly(String fileName, Bitmap bmp, Context ctx) {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.DISPLAY_NAME, "ascii_" + fileName + ".png");
                 values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
-                ContentResolver resolver = ctx.getContentResolver();
+                values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
 
+                ContentResolver resolver = ctx.getContentResolver();
                 Uri uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-                try {
-                        OutputStream outStream = resolver.openOutputStream(uri);
-                        bmp.compress(Bitmap.CompressFormat.PNG, 75, outStream);
-                } catch (Exception e) {
+                try (OutputStream out = resolver.openOutputStream(uri)) {
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+                } catch (IOException e) {
+                        resolver.delete(uri, null, null); // cleanup broken entry
                         throw new RuntimeException(e);
                 }
 
+                return uri;
         }
+
 
         public static String createTmpFolder(Context ctx, String name) {
                 File dir = ctx.getCacheDir();

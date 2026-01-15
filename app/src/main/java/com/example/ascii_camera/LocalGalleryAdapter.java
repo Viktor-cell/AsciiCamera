@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +47,8 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
 
                 holder.btnTrash.setOnClickListener(view -> {
                         File f = new File(uri.getPath());
+                        var deleted = f.delete();
 
-                        f.delete();
                         imageUris.remove(position);
                         notifyItemRemoved(position);
                 });
@@ -62,7 +63,6 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
 
                         AlertDialog alert = new AlertDialog.Builder(holder.ctx)
                                 .setCancelable(true)
-                                //.setMessage(holder.tv.getText())
                                 .setView(customDialog)
                                 .create();
 
@@ -85,7 +85,6 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
                 ImageView img;
                 TextView tv;
                 ImageButton btnTrash;
-                //LinearLayout llTextAndButton;
                 Context ctx;
 
                 public GalleryViewHolder(@NonNull View itemView, Context ctx) {

@@ -2,6 +2,7 @@ package com.example.ascii_camera;
 
 import static androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID;
 import static com.example.ascii_camera.Utils.createTmpFolder;
+import static com.example.ascii_camera.Utils.showGlobalGallery;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -91,10 +92,9 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                 });
 
-                client = null;
                 client = new WebsocetClient(ServerUtils.SERVER_SOCKET);
 
-                showGlobalGallery(layout, client, new JSONObject(Map.of(
+                showGlobalGallery(layout, client, this, new JSONObject(Map.of(
                         "count", 8,
                         "author", "",
                         "artname", ""
@@ -109,7 +109,7 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-                                showGlobalGallery(layout, client,new JSONObject(Map.of(
+                                showGlobalGallery(layout, client, MainActivityGlobalGallery.this, new JSONObject(Map.of(
                                         "count", 8,
                                         "author", editable.toString().trim(),
                                         "artname", editable.toString().trim()
@@ -117,26 +117,6 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                         }
                 });
         }
-
-
-        private void showGlobalGallery(FrameLayout layout,WebsocetClient client, JSONObject queryParams) {
-                client.sendMessage(queryParams, msg -> {
-                        try {
-                                JSONArray jsonArray = new JSONArray(msg);
-                                ArrayList<FullAscii> fullAsciis = FullAscii.fromJSONArray(jsonArray);
-
-                                runOnUiThread(() -> {
-                                        layout.removeAllViews();
-                                        View galleryView = Utils.createGlobalGallery(fullAsciis, MainActivityGlobalGallery.this, client, queryParams);
-                                        layout.addView(galleryView);
-                                });
-                        } catch (Exception e) {
-                                throw new RuntimeException(e);
-                        }
-                });
-
-        }
-
 
         private void initUser() {
                 if (Utils.getStringFromPrefs("name", this).trim().isEmpty()) {
@@ -154,6 +134,7 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
 
                 if (!name.equals(Utils.LOGGED_OUT_USERNAME)) {
                         btn.setOnClickListener(view -> {
+                                client.close();
                                 startActivity(new Intent(this, AccountActivity.class));
                         });
                 } else {

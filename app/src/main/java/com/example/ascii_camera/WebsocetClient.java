@@ -27,7 +27,14 @@ public class WebsocetClient {
                 start();
         }
 
-        public void sendMessage(String msg, WebsocketCallback onRecieve) {
+        public void close() {
+                if (ws != null) {
+                        ws.close(1000, "Closing websocket");
+                        ws = null;
+                }
+        }
+
+        public void sendMessage(String msg, WebsocketCallback onReceive) {
                 JSONObject json = new JSONObject();
 
                 try {
@@ -37,7 +44,7 @@ public class WebsocetClient {
                 }
 
                 String reqMsg = json.toString();
-                pendingRequests.put(requestID, onRecieve);
+                pendingRequests.put(requestID, onReceive);
                 requestID += 1;
                 ws.send(reqMsg);
         }

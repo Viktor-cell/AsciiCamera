@@ -19,6 +19,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,9 +97,6 @@ public class Utils {
                         @Override
                         public void onResponse(@NonNull Call call, @NonNull Response response) {
                                 if (response.isSuccessful()) {
-                                        act.runOnUiThread(() -> {
-                                                Toast.makeText(ctx, "Image send successfully", Toast.LENGTH_SHORT).show();
-                                        });
                                         Intent intent = new Intent(ctx, MainActivityLocalGallery.class);
                                         act.startActivity(intent);
                                 }
@@ -123,6 +121,24 @@ public class Utils {
                 }
 
                 return uri;
+        }
+
+        public static void showGlobalGallery(ViewGroup layout, WebsocetClient client, Activity activity, JSONObject queryParams) {
+                client.sendMessage(queryParams, msg -> {
+                        try {
+                                JSONArray jsonArray = new JSONArray(msg);
+                                ArrayList<FullAscii> fullAsciis = FullAscii.fromJSONArray(jsonArray);
+
+                                activity.runOnUiThread(() -> {
+                                        layout.removeAllViews();
+                                        View galleryView = Utils.createGlobalGallery(fullAsciis, activity, client, queryParams);
+                                        layout.addView(galleryView);
+                                });
+                        } catch (Exception e) {
+                                throw new RuntimeException(e);
+                        }
+                });
+
         }
 
 

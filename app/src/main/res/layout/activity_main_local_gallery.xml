@@ -5,10 +5,10 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivityLocalGallery"
-    android:background="@color/almost_black">
+    android:background="@color/almost_black"
+    tools:context=".MainActivityLocalGallery">
 
-
+    <!-- Gallery Container -->
     <FrameLayout
         android:id="@+id/flGallery"
         android:layout_width="0dp"
@@ -17,69 +17,73 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/btMenu"
+        app:layout_constraintBottom_toTopOf="@id/btLocalGallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
+    <!-- Navigation Buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btLocalGallery"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:layout_margin="16dp"
-        app:iconPadding="0dp"
-        app:iconGravity="textStart"
-        app:icon="@drawable/ic_home"
-        app:iconTint="@color/pure_white"
         app:backgroundTint="@color/system_blue"
+        app:cornerRadius="14dp"
+        app:icon="@drawable/ic_home"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/pure_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btMenu"
-
-        app:cornerRadius="12dp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btMenu"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:layout_margin="16dp"
-        app:iconPadding="0dp"
-        app:iconGravity="textStart"
-        app:icon="@drawable/ic_plus"
-        app:iconTint="@color/pure_white"
         app:backgroundTint="@color/system_blue"
+        app:cornerRadius="14dp"
+        app:icon="@drawable/ic_plus"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/pure_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btLocalGallery"
         app:layout_constraintEnd_toStartOf="@id/btGlobalGallery"
-        app:cornerRadius="12dp"/>
+        app:layout_constraintStart_toEndOf="@id/btLocalGallery" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btGlobalGallery"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:layout_margin="16dp"
-        app:iconPadding="0dp"
-        app:iconGravity="textStart"
-        app:icon="@drawable/ic_global"
-        app:iconTint="@color/pure_white"
         app:backgroundTint="@color/system_blue"
+        app:cornerRadius="14dp"
+        app:icon="@drawable/ic_global"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/pure_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:cornerRadius="12dp"/>
-
+        app:layout_constraintStart_toEndOf="@id/btMenu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

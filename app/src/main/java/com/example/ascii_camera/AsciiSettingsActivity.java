@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
@@ -162,57 +163,61 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                         CharactersColorsArray chcArray = avAscii.getChcAscii();
-                        TextInputEditText etFileName = new TextInputEditText(AsciiSettingsActivity.this);
-                        etFileName.setHint("Art name");
-                        etFileName.setHintTextColor(ContextCompat.getColor(AsciiSettingsActivity.this, R.color.gray));
+
+                        View dialogView = LayoutInflater.from(AsciiSettingsActivity.this)
+                                .inflate(R.layout.dialog_save_art, null);
+
+                        TextInputEditText etFileName = dialogView.findViewById(R.id.etFileName);
+                        MaterialButton mbtOk = dialogView.findViewById(R.id.mbtOk);
+                        MaterialButton mbtCancel = dialogView.findViewById(R.id.mbtCancel);
 
                         AlertDialog alert = new AlertDialog.Builder(AsciiSettingsActivity.this)
-                                .setMessage("Put the name of an art")
+                                .setView(dialogView)
                                 .setCancelable(true)
-                                .setView(etFileName)
-                                .setPositiveButton("OK", (dialog, which) -> {
-
-                                        String artName = etFileName.getText().toString().trim();
-
-                                        if (artName.isEmpty()) {
-                                                Toast.makeText(AsciiSettingsActivity.this, "Filename cant be empty", Toast.LENGTH_SHORT).show();
-                                                return;
-                                        }
-                                        ServerUtils.isOnlineAsync(new Callback() {
-                                                @Override
-                                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                                        runOnUiThread(() -> {
-                                                                Toast.makeText(AsciiSettingsActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
-                                                        });
-                                                }
-
-                                                @Override
-                                                public void onResponse(@NonNull Call call, @NonNull Response response) {
-                                                        runOnUiThread(() -> {
-
-                                                                FullAscii fullAscii = new FullAscii(
-                                                                        Utils.getStringFromPrefs("name", AsciiSettingsActivity.this),
-                                                                        artName,
-                                                                        chcArray.getWidth(),
-                                                                        chcArray.getHeight(),
-                                                                        chcArray.getColors(),
-                                                                        chcArray.getCharacters()
-                                                                );
-
-                                                                Utils.sendAsciiToOnlineGallery(
-                                                                        fullAscii,
-                                                                        AsciiSettingsActivity.this,
-                                                                        AsciiSettingsActivity.this
-                                                                );
-
-                                                                Toast.makeText(AsciiSettingsActivity.this, "Image send successfully", Toast.LENGTH_SHORT).show();
-                                                        });
-                                                }
-                                        });
-
-                                })
-                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                                 .create();
+
+                        mbtOk.setOnClickListener(v -> {
+                                String artName = etFileName.getText().toString().trim();
+
+                                if (artName.isEmpty()) {
+                                        Toast.makeText(AsciiSettingsActivity.this, "Filename cant be empty", Toast.LENGTH_SHORT).show();
+                                        return;
+                                }
+
+                                ServerUtils.isOnlineAsync(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                runOnUiThread(() -> {
+                                                        Toast.makeText(AsciiSettingsActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+                                                });
+                                        }
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                                runOnUiThread(() -> {
+                                                        FullAscii fullAscii = new FullAscii(
+                                                                Utils.getStringFromPrefs("name", AsciiSettingsActivity.this),
+                                                                artName,
+                                                                chcArray.getWidth(),
+                                                                chcArray.getHeight(),
+                                                                chcArray.getColors(),
+                                                                chcArray.getCharacters()
+                                                        );
+
+                                                        Utils.sendAsciiToOnlineGallery(
+                                                                fullAscii,
+                                                                AsciiSettingsActivity.this,
+                                                                AsciiSettingsActivity.this
+                                                        );
+
+                                                        Toast.makeText(AsciiSettingsActivity.this, "Image send successfully", Toast.LENGTH_SHORT).show();
+                                                        alert.dismiss();
+                                                });
+                                        }
+                                });
+                        });
+
+                        mbtCancel.setOnClickListener(v -> alert.dismiss());
 
                         alert.show();
                 }
@@ -222,32 +227,36 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                         Bitmap asciiAsBitmap = avAscii.getAsciiAsBitmap(true);
-                        TextInputEditText etFileName = new TextInputEditText(AsciiSettingsActivity.this);
-                        etFileName.setHint("Art name");
-                        etFileName.setHintTextColor(ContextCompat.getColor(AsciiSettingsActivity.this, R.color.gray));
+
+                        // Inflate the custom layout
+                        View dialogView = LayoutInflater.from(AsciiSettingsActivity.this)
+                                .inflate(R.layout.dialog_save_art, null);
+
+                        TextInputEditText etFileName = dialogView.findViewById(R.id.etFileName);
+                        MaterialButton mbtOk = dialogView.findViewById(R.id.mbtOk);
+                        MaterialButton mbtCancel = dialogView.findViewById(R.id.mbtCancel);
 
                         AlertDialog alert = new AlertDialog.Builder(AsciiSettingsActivity.this)
-                                .setMessage("Put the name of an art")
+                                .setView(dialogView)
                                 .setCancelable(true)
-                                .setView(etFileName)
-                                .setPositiveButton("OK", (dialog, which) -> {
-
-                                        String artName = etFileName.getText().toString().trim();
-
-                                        if (artName.isEmpty()) {
-                                                Toast.makeText(AsciiSettingsActivity.this, "Filename cant be empty", Toast.LENGTH_SHORT).show();
-                                                return;
-                                        }
-                                        Utils.saveLocaly(artName, asciiAsBitmap, AsciiSettingsActivity.this);
-                                        Toast.makeText(AsciiSettingsActivity.this, "File saved successfully", Toast.LENGTH_SHORT).show();
-
-                                })
-                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                                 .create();
+
+                        mbtOk.setOnClickListener(v -> {
+                                String artName = etFileName.getText().toString().trim();
+
+                                if (artName.isEmpty()) {
+                                        Toast.makeText(AsciiSettingsActivity.this, "Filename cant be empty", Toast.LENGTH_SHORT).show();
+                                        return;
+                                }
+                                Utils.saveLocaly(artName, asciiAsBitmap, AsciiSettingsActivity.this);
+                                Toast.makeText(AsciiSettingsActivity.this, "File saved successfully", Toast.LENGTH_SHORT).show();
+                                alert.dismiss();
+                        });
+
+                        mbtCancel.setOnClickListener(v -> alert.dismiss());
 
                         alert.show();
                 }
-
         }
 
         private class OnReturnButtonClick implements View.OnClickListener {

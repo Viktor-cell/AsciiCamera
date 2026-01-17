@@ -5,36 +5,36 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivityLocalGallery"
-    android:background="@color/almost_black">
+    android:background="@color/almost_black"
+    tools:context=".MainActivityLocalGallery">
 
-    <LinearLayout
-        android:id="@+id/llUser"
+    <!-- User Name -->
+    <TextView
+        android:id="@+id/tvLoginName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/pure_white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/btAccount"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Welcome, User" />
+
+    <!-- Account Button -->
+    <ImageButton
+        android:id="@+id/btAccount"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Account"
+        android:src="@drawable/ic_account"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvLoginName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/pure_white"
-            tools:text="Welcome, User" />
-
-        <ImageButton
-            android:id="@+id/btAccount"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_account" />
-    </LinearLayout>
-
+    <!-- Search Bar -->
     <EditText
         android:id="@+id/etSearchBar"
         android:layout_width="0dp"
@@ -42,18 +42,22 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="Search..."
-        android:textColorHint="@color/gray"
-        android:textColor="@color/pure_white"
-        android:background="@color/dark_gray"
+        android:background="@drawable/search_background"
         android:drawableStart="@drawable/ic_search"
-        android:drawablePadding="8dp"
-        android:padding="12dp"
-
-        app:layout_constraintStart_toStartOf="parent"
+        android:drawablePadding="12dp"
+        android:hint="Search..."
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/pure_white"
+        android:textColorHint="@color/gray"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/llUser" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btAccount" />
 
+    <!-- Gallery Container -->
     <FrameLayout
         android:id="@+id/flGallery"
         android:layout_width="0dp"
@@ -62,67 +66,73 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/btMenu"
+        app:layout_constraintBottom_toTopOf="@id/btLocalGallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etSearchBar" />
 
+    <!-- Navigation Buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btLocalGallery"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:layout_margin="16dp"
-        app:iconPadding="0dp"
-        app:iconGravity="textStart"
-        app:icon="@drawable/ic_home"
-        app:iconTint="@color/pure_white"
         app:backgroundTint="@color/system_blue"
+        app:cornerRadius="14dp"
+        app:icon="@drawable/ic_home"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/pure_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btMenu"
-        app:cornerRadius="12dp"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btMenu"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:layout_margin="16dp"
-        app:iconPadding="0dp"
-        app:iconGravity="textStart"
-        app:icon="@drawable/ic_plus"
-        app:iconTint="@color/pure_white"
         app:backgroundTint="@color/system_blue"
+        app:cornerRadius="14dp"
+        app:icon="@drawable/ic_plus"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/pure_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btLocalGallery"
         app:layout_constraintEnd_toStartOf="@id/btGlobalGallery"
-        app:cornerRadius="12dp"/>
+        app:layout_constraintStart_toEndOf="@id/btLocalGallery" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btGlobalGallery"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:layout_margin="16dp"
-        app:iconPadding="0dp"
-        app:iconGravity="textStart"
-        app:icon="@drawable/ic_global"
-        app:iconTint="@color/pure_white"
         app:backgroundTint="@color/system_blue"
+        app:cornerRadius="14dp"
+        app:icon="@drawable/ic_global"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/pure_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:cornerRadius="12dp"/>
+        app:layout_constraintStart_toEndOf="@id/btMenu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

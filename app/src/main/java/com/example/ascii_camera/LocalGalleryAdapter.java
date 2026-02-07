@@ -46,33 +46,40 @@ public class LocalGalleryAdapter extends RecyclerView.Adapter<LocalGalleryAdapte
                 holder.tv.setText(uriPath.substring(6, uriPath.length() - 4));
 
                 holder.btnTrash.setOnClickListener(view -> {
-                        File f = new File(uri.getPath());
-                        var deleted = f.delete();
+                        int adapterPosition = holder.getAdapterPosition();
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                                Uri currentUri = imageUris.get(adapterPosition);
+                                File f = new File(currentUri.getPath());
+                                f.delete();
 
-                        imageUris.remove(position);
-                        notifyItemRemoved(position);
+                                imageUris.remove(adapterPosition);
+                                notifyItemRemoved(adapterPosition);
+                        }
                 });
 
                 holder.img.setOnClickListener(view -> {
-                        LayoutInflater inflater = LayoutInflater.from(holder.ctx);
+                        int adapterPosition = holder.getAdapterPosition();
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                                LayoutInflater inflater = LayoutInflater.from(holder.ctx);
 
-                        View customDialog = inflater.inflate(R.layout.image_preview_main_activity_dialog, null);
+                                View customDialog = inflater.inflate(R.layout.image_preview_main_activity_dialog, null);
 
-                        ImageView img = customDialog.findViewById(R.id.imgPreview);
-                        ImageButton bt = customDialog.findViewById(R.id.btClose);
+                                ImageView img = customDialog.findViewById(R.id.imgPreview);
+                                ImageButton bt = customDialog.findViewById(R.id.btClose);
 
-                        AlertDialog alert = new AlertDialog.Builder(holder.ctx)
-                                .setCancelable(true)
-                                .setView(customDialog)
-                                .create();
+                                AlertDialog alert = new AlertDialog.Builder(holder.ctx)
+                                        .setCancelable(true)
+                                        .setView(customDialog)
+                                        .create();
 
-                        bt.setOnClickListener(v -> {
-                                alert.dismiss();
-                        });
+                                bt.setOnClickListener(v -> {
+                                        alert.dismiss();
+                                });
 
-                        img.setImageURI(imageUris.get(position));
-                        alert.show();
-                        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                img.setImageURI(imageUris.get(adapterPosition));
+                                alert.show();
+                                alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        }
                 });
         }
 

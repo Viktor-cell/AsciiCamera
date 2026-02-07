@@ -1,7 +1,5 @@
 package com.example.ascii_camera;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import okio.ByteString;
 public class WebsocetClient {
 
         public final String websocketUrl;
-        private static final String TAG = "WebSocketClient";
         private final OkHttpClient client = new OkHttpClient();
         private final HashMap<Integer, WebsocketCallback> pendingRequests = new HashMap<>();
         private Integer requestID = 0;
@@ -66,14 +63,10 @@ public class WebsocetClient {
                 Request req = new Request.Builder().url(websocketUrl).build();
                 WebSocketListener wsl = new WebSocketListener() {
                         @Override
-                        public void onOpen(WebSocket webSocket, Response response) {
-
-                                Log.d(TAG, "WebSocket opened");
-                        }
+                        public void onOpen(WebSocket webSocket, Response response) {}
 
                         @Override
                         public void onMessage(WebSocket webSocket, String text) {
-                                Log.d(TAG, "Received text: " + text);
 
                                 try {
                                         JSONObject json = new JSONObject(text);
@@ -89,18 +82,15 @@ public class WebsocetClient {
 
                         @Override
                         public void onMessage(WebSocket webSocket, ByteString bytes) {
-                                Log.d(TAG, "Received bytes: " + bytes.hex());
                         }
 
                         @Override
                         public void onClosing(WebSocket webSocket, int code, String reason) {
-                                Log.d(TAG, "Closing: " + reason);
                                 webSocket.close(1000, null);
                         }
 
                         @Override
                         public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                                Log.e(TAG, "WebSocket error", t);
                         }
                 };
 

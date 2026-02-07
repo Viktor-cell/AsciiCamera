@@ -60,10 +60,13 @@ public class LoginActivity extends AppCompatActivity {
                                 return;
                         }
 
+                        // Hash the password before sending
+                        String hashedPassword = Utils.hash(password);
+
                         JSONObject json = new JSONObject();
                         try {
                                 json.put("name", name);
-                                json.put("password", password);
+                                json.put("password", hashedPassword);
                         } catch (Exception e) {
                                 throw new RuntimeException(e);
                         }

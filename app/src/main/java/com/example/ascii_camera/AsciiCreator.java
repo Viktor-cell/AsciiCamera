@@ -198,7 +198,7 @@ public class AsciiCreator implements Parcelable {
         }
 
         private char getEdgeCharacter(double magX, double magY) {
-                double angle = Math.toDegrees(Math.atan2(magY, magY));
+                double angle = Math.toDegrees(Math.atan2(magY, magX));
 
                 if ((angle > -22.5 && angle <= 22.5) || angle <= -157.5 || angle > 157.5) {
                         return '|';

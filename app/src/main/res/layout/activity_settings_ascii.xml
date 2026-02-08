@@ -51,13 +51,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/gray"
-                android:hint="Character set">
+                android:hint="Character set (ASCII only)">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCharset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/pure_white"/>
+                    android:textColor="@color/pure_white"
+                    android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -68,14 +69,49 @@
                 android:textColor="@color/gray"
                 android:text="Font size" />
 
-            <SeekBar
-                android:id="@+id/sbFontSize"
+            <!-- Font size controls container -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="150"
-                android:min="3" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
+                <!-- Decrease button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btFontSizeDecrease"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="-"
+                    android:textSize="20sp"
+                    android:textColor="@color/pure_white"
+                    app:backgroundTint="@color/system_blue"
+                    app:cornerRadius="8dp" />
 
+                <!-- SeekBar -->
+                <SeekBar
+                    android:id="@+id/sbFontSize"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:max="150"
+                    android:min="3" />
+
+                <!-- Increase button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btFontSizeIncrease"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="+"
+                    android:textSize="20sp"
+                    android:textColor="@color/pure_white"
+                    app:backgroundTint="@color/system_blue"
+                    app:cornerRadius="8dp" />
+
+            </LinearLayout>
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/swMonochrome"
@@ -84,8 +120,6 @@
                 android:layout_marginTop="16dp"
                 android:textColor="@color/pure_white"
                 android:text="Monochrome" />
-
-
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/swInverted"
@@ -122,7 +156,6 @@
                 android:layout_height="wrap_content"
                 android:max="1000"
                 android:min="1" />
-
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

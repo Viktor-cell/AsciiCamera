@@ -36,6 +36,8 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
         private FloatingActionButton btSettings;
         private MaterialButton btSaveImage;
+        private MaterialButton btFontSizeIncrease;
+        private MaterialButton btFontSizeDecrease;
         private TextInputEditText etCharset;
         private SeekBar sbFontSize;
         private SeekBar sbMinMag;
@@ -97,6 +99,8 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         private void initVars() {
                 btSettings = findViewById(R.id.btSettings);
                 btSaveImage = findViewById(R.id.btSaveImage);
+                btFontSizeIncrease = findViewById(R.id.btFontSizeIncrease);
+                btFontSizeDecrease = findViewById(R.id.btFontSizeDecrease);
                 etCharset = findViewById(R.id.etCharset);
                 sbFontSize = findViewById(R.id.sbFontSize);
                 sbMinMag = findViewById(R.id.sbMinMag);
@@ -113,6 +117,18 @@ public class AsciiSettingsActivity extends AppCompatActivity {
         private void setupListeners() {
                 btSettings.setOnClickListener(new OnSettingsButtonClick());
                 btSaveImage.setOnClickListener(new OnSaveImageButtonClick());
+                btFontSizeIncrease.setOnClickListener(v -> {
+                        int currentProgress = sbFontSize.getProgress();
+                        if (currentProgress < sbFontSize.getMax()) {
+                                sbFontSize.setProgress(currentProgress + 1);
+                        }
+                });
+                btFontSizeDecrease.setOnClickListener(v -> {
+                        int currentProgress = sbFontSize.getProgress();
+                        if (currentProgress > sbFontSize.getMin()) {
+                                sbFontSize.setProgress(currentProgress - 1);
+                        }
+                });
                 sbFontSize.setOnSeekBarChangeListener(new FontSizeTextAdjust());
                 sbMinMag.setOnSeekBarChangeListener(new MinMagTextAdjust());
                 swbEdges.setOnCheckedChangeListener(new OnCheckBoxCheckChange());
@@ -270,6 +286,7 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        // Remove spaces (except when it's the only character)
                         if (s.toString().endsWith(" ") && s.length() != 1) {
                                 etCharset.setText(s.subSequence(0, s.length() - 1));
                                 etCharset.setSelection(s.length() - 1);
@@ -282,10 +299,39 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                        // Filter out non-ASCII characters
+                        String filtered = filterNonAscii(s.toString());
+
+                        if (!filtered.equals(s.toString())) {
+                                // Non-ASCII characters detected, remove them
+                                int cursorPos = etCharset.getSelectionStart();
+                                etCharset.removeTextChangedListener(this);
+                                etCharset.setText(filtered);
+                                etCharset.setSelection(Math.min(cursorPos, filtered.length()));
+                                etCharset.addTextChangedListener(this);
+
+                                Toast.makeText(AsciiSettingsActivity.this,
+                                        "Only ASCII characters allowed",
+                                        Toast.LENGTH_SHORT).show();
+                        }
+
                         if (s.toString().isEmpty()) {
                                 etCharset.setText(" ");
                         }
                         needsReset.setValue(true);
+                }
+
+                /**
+                 * Filter out non-ASCII characters (keep only characters 0-127)
+                 */
+                private String filterNonAscii(String input) {
+                        StringBuilder result = new StringBuilder();
+                        for (char c : input.toCharArray()) {
+                                if (c >= 0 && c <= 127) {
+                                        result.append(c);
+                                }
+                        }
+                        return result.toString();
                 }
         }
 

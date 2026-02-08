@@ -3,6 +3,7 @@ package com.example.ascii_camera;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -81,6 +82,7 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
 
                 Bitmap full = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(full);
+                canvas.drawColor(Color.BLACK); // Fill with white background
                 draw(canvas);
 
                 if (!cropToContent) return full;

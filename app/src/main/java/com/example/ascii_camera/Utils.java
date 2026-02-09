@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,22 +124,96 @@ public class Utils {
                 return uri;
         }
 
-        public static void showGlobalGallery(ViewGroup layout, WebsocetClient client, Activity activity, JSONObject queryParams) {
-                client.sendMessage(queryParams, msg -> {
-                        try {
-                                JSONArray jsonArray = new JSONArray(msg);
-                                ArrayList<FullAscii> fullAsciis = FullAscii.fromJSONArray(jsonArray);
-
+        public static void showGlobalGallery(ViewGroup layout, WebsocetClient client, Activity activity, JSONObject queryParams, boolean showAuthor) {
+                // Check if server is online first
+                ServerUtils.isOnlineAsync(new okhttp3.Callback() {
+                        @Override
+                        public void onFailure(@androidx.annotation.NonNull okhttp3.Call call, @androidx.annotation.NonNull java.io.IOException e) {
+                                // Server is offline
                                 activity.runOnUiThread(() -> {
                                         layout.removeAllViews();
-                                        View galleryView = Utils.createGlobalGallery(fullAsciis, activity, client, queryParams);
-                                        layout.addView(galleryView);
+                                        View offlineView = createServerOfflineView(activity);
+                                        layout.addView(offlineView);
                                 });
-                        } catch (Exception e) {
-                                throw new RuntimeException(e);
+                        }
+
+                        @Override
+                        public void onResponse(@androidx.annotation.NonNull okhttp3.Call call, @androidx.annotation.NonNull okhttp3.Response response) {
+                                if (!response.isSuccessful()) {
+                                        // Server is not responding properly
+                                        activity.runOnUiThread(() -> {
+                                                layout.removeAllViews();
+                                                View offlineView = createServerOfflineView(activity);
+                                                layout.addView(offlineView);
+                                        });
+                                        return;
+                                }
+
+                                // Server is online, proceed with websocket
+                                try {
+                                        client.sendMessage(queryParams, msg -> {
+                                                try {
+                                                        JSONArray jsonArray = new JSONArray(msg);
+                                                        ArrayList<FullAscii> fullAsciis = FullAscii.fromJSONArray(jsonArray);
+
+                                                        activity.runOnUiThread(() -> {
+                                                                layout.removeAllViews();
+                                                                View galleryView = Utils.createGlobalGallery(fullAsciis, activity, client, queryParams, showAuthor);
+                                                                layout.addView(galleryView);
+                                                        });
+                                                } catch (Exception e) {
+                                                        activity.runOnUiThread(() -> {
+                                                                layout.removeAllViews();
+                                                                View errorView = createServerOfflineView(activity);
+                                                                layout.addView(errorView);
+                                                        });
+                                                }
+                                        });
+                                } catch (Exception e) {
+                                        activity.runOnUiThread(() -> {
+                                                layout.removeAllViews();
+                                                View errorView = createServerOfflineView(activity);
+                                                layout.addView(errorView);
+                                        });
+                                }
                         }
                 });
+        }
 
+        private static View createServerOfflineView(Context ctx) {
+                // Create a LinearLayout to hold the icon and text vertically
+                android.widget.LinearLayout container = new android.widget.LinearLayout(ctx);
+                container.setOrientation(android.widget.LinearLayout.VERTICAL);
+                container.setGravity(android.view.Gravity.CENTER);
+                container.setPadding(40, 40, 40, 40);
+
+                // Create ImageView for the icon
+                ImageView iv = new ImageView(ctx);
+                iv.setImageResource(R.drawable.ic_no_image);
+                android.widget.LinearLayout.LayoutParams ivParams = new android.widget.LinearLayout.LayoutParams(
+                        400, 400
+                );
+                ivParams.gravity = android.view.Gravity.CENTER;
+                ivParams.setMargins(0, 0, 0, 20);
+                iv.setLayoutParams(ivParams);
+
+                // Create TextView for the message
+                TextView tv = new TextView(ctx);
+                tv.setText("Server is offline\nPlease check your connection");
+                tv.setTextSize(18);
+                tv.setGravity(android.view.Gravity.CENTER);
+                tv.setTextColor(0xFF666666);
+                android.widget.LinearLayout.LayoutParams tvParams = new android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                tvParams.setMargins(0, 20, 0, 0);
+                tv.setLayoutParams(tvParams);
+
+                container.addView(iv);
+                container.addView(tv);
+
+                return container;
         }
 
 
@@ -230,9 +305,39 @@ public class Utils {
 
         public static View createLocalGallery(ArrayList<Uri> images, Context ctx) {
                 if (images.isEmpty()) {
+                        // Create a LinearLayout to hold the icon and text vertically
+                        android.widget.LinearLayout container = new android.widget.LinearLayout(ctx);
+                        container.setOrientation(android.widget.LinearLayout.VERTICAL);
+                        container.setGravity(android.view.Gravity.CENTER);
+                        container.setPadding(40, 40, 40, 40);
+
+                        // Create ImageView for the icon
+                        ImageView iv = new ImageView(ctx);
+                        iv.setImageResource(R.drawable.ic_no_image);
+                        android.widget.LinearLayout.LayoutParams ivParams = new android.widget.LinearLayout.LayoutParams(
+                                400, 400
+                        );
+                        ivParams.gravity = android.view.Gravity.CENTER;
+                        ivParams.setMargins(0, 0, 0, 20);
+                        iv.setLayoutParams(ivParams);
+
+                        // Create TextView for the message
                         TextView tv = new TextView(ctx);
-                        tv.setText("No image found");
-                        return tv;
+                        tv.setText("No images saved yet\nCreate your first ASCII art!");
+                        tv.setTextSize(18);
+                        tv.setGravity(android.view.Gravity.CENTER);
+                        tv.setTextColor(0xFF666666);
+                        android.widget.LinearLayout.LayoutParams tvParams = new android.widget.LinearLayout.LayoutParams(
+                                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        tvParams.setMargins(0, 20, 0, 0);
+                        tv.setLayoutParams(tvParams);
+
+                        container.addView(iv);
+                        container.addView(tv);
+
+                        return container;
                 }
                 RecyclerView rvGallery = new RecyclerView(ctx);
                 rvGallery.setLayoutManager(new GridLayoutManager(ctx, 2));
@@ -241,28 +346,63 @@ public class Utils {
                 return rvGallery;
         }
 
-        public static View createGlobalGallery(ArrayList<FullAscii> asciis, Context ctx, WebsocetClient client, JSONObject queryParams) {
+        public static View createGlobalGallery(ArrayList<FullAscii> asciis, Context ctx, WebsocetClient client, JSONObject queryParams, boolean showAuthor) {
 
                 if (asciis.isEmpty()) {
+                        // Create a LinearLayout to hold the icon and text vertically
+                        android.widget.LinearLayout container = new android.widget.LinearLayout(ctx);
+                        container.setOrientation(android.widget.LinearLayout.VERTICAL);
+                        container.setGravity(android.view.Gravity.CENTER);
+                        container.setPadding(40, 40, 40, 40);
+
+                        // Create ImageView for the icon
+                        ImageView iv = new ImageView(ctx);
+                        iv.setImageResource(R.drawable.ic_no_image);
+                        android.widget.LinearLayout.LayoutParams ivParams = new android.widget.LinearLayout.LayoutParams(
+                                400, 400
+                        );
+                        ivParams.gravity = android.view.Gravity.CENTER;
+                        ivParams.setMargins(0, 0, 0, 20);
+                        iv.setLayoutParams(ivParams);
+
+                        // Create TextView for the message
                         TextView tv = new TextView(ctx);
-                        tv.setText("No image found");
-                        return tv;
+                        tv.setText("No art found\nTry a different search or upload your own!");
+                        tv.setTextSize(18);
+                        tv.setGravity(android.view.Gravity.CENTER);
+                        tv.setTextColor(0xFF666666);
+                        android.widget.LinearLayout.LayoutParams tvParams = new android.widget.LinearLayout.LayoutParams(
+                                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        tvParams.setMargins(0, 20, 0, 0);
+                        tv.setLayoutParams(tvParams);
+
+                        container.addView(iv);
+                        container.addView(tv);
+
+                        return container;
                 }
 
                 RecyclerView rvGallery = new RecyclerView(ctx);
-                GlobalGalleryAdapter adapter = new GlobalGalleryAdapter(asciis);
+                GlobalGalleryAdapter adapter = new GlobalGalleryAdapter(asciis, showAuthor);
 
                 rvGallery.setLayoutManager(new GridLayoutManager(ctx, 2));
                 rvGallery.setAdapter(adapter);
 
                 final boolean[] isLoading = {false};
+                final boolean[] hasMoreData = {true};
 
                 rvGallery.addOnScrollListener(new RecyclerView.OnScrollListener() {
                         @Override
                         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                                 super.onScrolled(recyclerView, dx, dy);
 
+                                // Only load when scrolling down
                                 if (dy < 0) return;
+
+                                // Stop loading if no more data available
+                                if (!hasMoreData[0]) return;
 
                                 GridLayoutManager layoutManager =
                                         (GridLayoutManager) recyclerView.getLayoutManager();
@@ -270,7 +410,7 @@ public class Utils {
                                 int lastVisible = layoutManager.findLastVisibleItemPosition();
                                 int total = layoutManager.getItemCount();
 
-                                final int PRELOAD_MARGIN = 2;
+                                final int PRELOAD_MARGIN = 4;
 
                                 if (!isLoading[0] && lastVisible >= total - PRELOAD_MARGIN) {
 
@@ -282,11 +422,20 @@ public class Utils {
                                                         ArrayList<FullAscii> newAsciis = FullAscii.fromJSONArray(array);
 
                                                         recyclerView.post(() -> {
-                                                                adapter.addAsciis(newAsciis);
+                                                                // Check if server returned any new data
+                                                                if (newAsciis.isEmpty()) {
+                                                                        hasMoreData[0] = false;
+                                                                } else {
+                                                                        adapter.addAsciis(newAsciis);
+                                                                }
                                                                 isLoading[0] = false;
                                                         });
 
                                                 } catch (Exception e) {
+                                                        // Reset loading state on error to allow retry
+                                                        recyclerView.post(() -> {
+                                                                isLoading[0] = false;
+                                                        });
                                                         throw new RuntimeException(e);
                                                 }
                                         });

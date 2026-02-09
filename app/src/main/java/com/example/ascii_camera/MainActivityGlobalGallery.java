@@ -98,7 +98,7 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                         "count", 8,
                         "author", "",
                         "artname", ""
-                        )));
+                )), true);
 
                 etSearchBar.addTextChangedListener(new TextWatcher() {
                         @Override
@@ -113,7 +113,7 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                                         "count", 8,
                                         "author", editable.toString().trim(),
                                         "artname", editable.toString().trim()
-                                )));
+                                )), true);
                         }
                 });
         }

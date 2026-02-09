@@ -51,7 +51,7 @@ public class AccountActivity extends AppCompatActivity {
                         "count", 8,
                         "author", Utils.getStringFromPrefs("name", AccountActivity.this),
                         "artname", ""
-                )));
+                )), false);
         }
 
         private void initVars() {

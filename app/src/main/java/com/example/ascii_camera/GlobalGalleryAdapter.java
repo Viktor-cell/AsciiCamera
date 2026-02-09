@@ -22,13 +22,21 @@ import java.util.ArrayList;
 
 public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdapter.GalleryViewHolder> {
         ArrayList<FullAscii> fullAsciis;
+        boolean showAuthor;
 
         public GlobalGalleryAdapter(ArrayList<FullAscii> fullAsciis) {
                 this.fullAsciis = fullAsciis;
+                this.showAuthor = true;
+        }
+
+        public GlobalGalleryAdapter(ArrayList<FullAscii> fullAsciis, boolean showAuthor) {
+                this.fullAsciis = fullAsciis;
+                this.showAuthor = showAuthor;
         }
 
         public GlobalGalleryAdapter() {
                 fullAsciis = new ArrayList<>();
+                this.showAuthor = true;
         }
 
         public void addAsciis(ArrayList<FullAscii> fullAsciis) {
@@ -53,6 +61,13 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
 
                 holder.tvAuthor.setText(fullAscii.getAuthor());
                 holder.tvArtname.setText(fullAscii.getArtName());
+
+                // Hide author name if showAuthor is false
+                if (showAuthor) {
+                        holder.tvAuthor.setVisibility(android.view.View.VISIBLE);
+                } else {
+                        holder.tvAuthor.setVisibility(android.view.View.GONE);
+                }
 
                 holder.img.setOnClickListener(view -> {
                         LayoutInflater inflater = LayoutInflater.from(holder.ctx);

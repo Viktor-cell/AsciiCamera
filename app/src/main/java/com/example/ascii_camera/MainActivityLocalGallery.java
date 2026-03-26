@@ -278,7 +278,6 @@ public class MainActivityLocalGallery extends AppCompatActivity {
                         });
                 }
 
-                // Add this method to handle the bitmap once it's loaded
                 private void handleImageBitmap(Bitmap bitmap) {
                         try {
                                 String path = createTmpFolder(MainActivityLocalGallery.this, "tmpImageDir");
@@ -295,11 +294,8 @@ public class MainActivityLocalGallery extends AppCompatActivity {
                         }
 
 
-                        // Do whatever you need with the bitmap here
-                        // For example: imageView.setImageBitmap(bitmap);
                 }
                 private void setupMenuButtons(ViewGroup menuLayout) {
-                        // Close menu when clicking the background
                         menuLayout.setOnClickListener(v -> hideMenu());
 
                         MaterialButton mbtSelectPhoto = menuLayout.findViewById(R.id.mbtSelectPhoto);

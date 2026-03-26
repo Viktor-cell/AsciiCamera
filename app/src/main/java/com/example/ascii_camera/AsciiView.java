@@ -82,7 +82,7 @@ public class AsciiView extends androidx.appcompat.widget.AppCompatTextView {
 
                 Bitmap full = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(full);
-                canvas.drawColor(Color.BLACK); // Fill with white background
+                canvas.drawColor(Color.BLACK);
                 draw(canvas);
 
                 if (!cropToContent) return full;

@@ -117,7 +117,7 @@ public class Utils {
                 try (OutputStream out = resolver.openOutputStream(uri)) {
                         bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
                 } catch (IOException e) {
-                        resolver.delete(uri, null, null); // cleanup broken entry
+                        resolver.delete(uri, null, null);
                         throw new RuntimeException(e);
                 }
 
@@ -125,11 +125,9 @@ public class Utils {
         }
 
         public static void showGlobalGallery(ViewGroup layout, WebsocetClient client, Activity activity, JSONObject queryParams, boolean showAuthor) {
-                // Check if server is online first
                 ServerUtils.isOnlineAsync(new okhttp3.Callback() {
                         @Override
                         public void onFailure(@androidx.annotation.NonNull okhttp3.Call call, @androidx.annotation.NonNull java.io.IOException e) {
-                                // Server is offline
                                 activity.runOnUiThread(() -> {
                                         layout.removeAllViews();
                                         View offlineView = createServerOfflineView(activity);
@@ -140,7 +138,6 @@ public class Utils {
                         @Override
                         public void onResponse(@androidx.annotation.NonNull okhttp3.Call call, @androidx.annotation.NonNull okhttp3.Response response) {
                                 if (!response.isSuccessful()) {
-                                        // Server is not responding properly
                                         activity.runOnUiThread(() -> {
                                                 layout.removeAllViews();
                                                 View offlineView = createServerOfflineView(activity);
@@ -149,7 +146,6 @@ public class Utils {
                                         return;
                                 }
 
-                                // Server is online, proceed with websocket
                                 try {
                                         client.sendMessage(queryParams, msg -> {
                                                 try {
@@ -181,13 +177,11 @@ public class Utils {
         }
 
         private static View createServerOfflineView(Context ctx) {
-                // Create a LinearLayout to hold the icon and text vertically
                 android.widget.LinearLayout container = new android.widget.LinearLayout(ctx);
                 container.setOrientation(android.widget.LinearLayout.VERTICAL);
                 container.setGravity(android.view.Gravity.CENTER);
                 container.setPadding(40, 40, 40, 40);
 
-                // Create ImageView for the icon
                 ImageView iv = new ImageView(ctx);
                 iv.setImageResource(R.drawable.ic_no_image);
                 android.widget.LinearLayout.LayoutParams ivParams = new android.widget.LinearLayout.LayoutParams(
@@ -197,7 +191,6 @@ public class Utils {
                 ivParams.setMargins(0, 0, 0, 20);
                 iv.setLayoutParams(ivParams);
 
-                // Create TextView for the message
                 TextView tv = new TextView(ctx);
                 tv.setText("Server is offline\nPlease check your connection");
                 tv.setTextSize(18);
@@ -311,7 +304,6 @@ public class Utils {
                         container.setGravity(android.view.Gravity.CENTER);
                         container.setPadding(40, 40, 40, 40);
 
-                        // Create ImageView for the icon
                         ImageView iv = new ImageView(ctx);
                         iv.setImageResource(R.drawable.ic_no_image);
                         android.widget.LinearLayout.LayoutParams ivParams = new android.widget.LinearLayout.LayoutParams(
@@ -321,7 +313,6 @@ public class Utils {
                         ivParams.setMargins(0, 0, 0, 20);
                         iv.setLayoutParams(ivParams);
 
-                        // Create TextView for the message
                         TextView tv = new TextView(ctx);
                         tv.setText("No images saved yet\nCreate your first ASCII art!");
                         tv.setTextSize(18);
@@ -349,13 +340,11 @@ public class Utils {
         public static View createGlobalGallery(ArrayList<FullAscii> asciis, Context ctx, WebsocetClient client, JSONObject queryParams, boolean showAuthor) {
 
                 if (asciis.isEmpty()) {
-                        // Create a LinearLayout to hold the icon and text vertically
                         android.widget.LinearLayout container = new android.widget.LinearLayout(ctx);
                         container.setOrientation(android.widget.LinearLayout.VERTICAL);
                         container.setGravity(android.view.Gravity.CENTER);
                         container.setPadding(40, 40, 40, 40);
 
-                        // Create ImageView for the icon
                         ImageView iv = new ImageView(ctx);
                         iv.setImageResource(R.drawable.ic_no_image);
                         android.widget.LinearLayout.LayoutParams ivParams = new android.widget.LinearLayout.LayoutParams(
@@ -365,7 +354,6 @@ public class Utils {
                         ivParams.setMargins(0, 0, 0, 20);
                         iv.setLayoutParams(ivParams);
 
-                        // Create TextView for the message
                         TextView tv = new TextView(ctx);
                         tv.setText("No art found\nTry a different search or upload your own!");
                         tv.setTextSize(18);
@@ -398,10 +386,8 @@ public class Utils {
                         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                                 super.onScrolled(recyclerView, dx, dy);
 
-                                // Only load when scrolling down
                                 if (dy < 0) return;
 
-                                // Stop loading if no more data available
                                 if (!hasMoreData[0]) return;
 
                                 GridLayoutManager layoutManager =
@@ -422,7 +408,6 @@ public class Utils {
                                                         ArrayList<FullAscii> newAsciis = FullAscii.fromJSONArray(array);
 
                                                         recyclerView.post(() -> {
-                                                                // Check if server returned any new data
                                                                 if (newAsciis.isEmpty()) {
                                                                         hasMoreData[0] = false;
                                                                 } else {
@@ -432,7 +417,6 @@ public class Utils {
                                                         });
 
                                                 } catch (Exception e) {
-                                                        // Reset loading state on error to allow retry
                                                         recyclerView.post(() -> {
                                                                 isLoading[0] = false;
                                                         });

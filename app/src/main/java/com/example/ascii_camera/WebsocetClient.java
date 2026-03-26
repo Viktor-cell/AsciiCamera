@@ -95,7 +95,6 @@ public class WebsocetClient {
                 };
 
                 this.ws = client.newWebSocket(req, wsl);
-                //client.dispatcher().executorService().shutdown();
         }
 
         public interface WebsocketCallback {

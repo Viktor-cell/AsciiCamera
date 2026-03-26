@@ -299,7 +299,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                        // Filter out non-ASCII characters
                         String filtered = filterNonAscii(s.toString());
 
                         if (!filtered.equals(s.toString())) {
@@ -321,9 +320,6 @@ public class AsciiSettingsActivity extends AppCompatActivity {
                         needsReset.setValue(true);
                 }
 
-                /**
-                 * Filter out non-ASCII characters (keep only characters 0-127)
-                 */
                 private String filterNonAscii(String input) {
                         StringBuilder result = new StringBuilder();
                         for (char c : input.toCharArray()) {

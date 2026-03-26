@@ -194,8 +194,7 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                 }
 
                 private void showEnterUrl() {
-                        if (currentEnterUrlLayout != null) return; // Already showing
-
+                        if (currentEnterUrlLayout != null) return;
                         ViewGroup root = MainActivityGlobalGallery.this.findViewById(R.id.rootLayout);
                         ViewGroup enterUrlLayout = (ViewGroup) inflater.inflate(R.layout.enter_url, root, false);
 
@@ -325,9 +324,6 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                                                         }
 
                                                         runOnUiThread(() -> {
-                                                                // Use your bitmap here - example:
-                                                                // imageView.setImageBitmap(bitmap);
-                                                                // or store it in a variable
                                                                 handleImageBitmap(bitmap);
 
                                                                 Toast.makeText(getApplicationContext(),
@@ -351,7 +347,6 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                         });
                 }
 
-                // Add this method to handle the bitmap once it's loaded
                 private void handleImageBitmap(Bitmap bitmap) {
                         try {
                                 String path = createTmpFolder(MainActivityGlobalGallery.this, "tmpImageDir");
@@ -368,11 +363,8 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                         }
 
 
-                        // Do whatever you need with the bitmap here
-                        // For example: imageView.setImageBitmap(bitmap);
                 }
                 private void setupMenuButtons(ViewGroup menuLayout) {
-                        // Close menu when clicking the background
                         menuLayout.setOnClickListener(v -> hideMenu());
 
                         MaterialButton mbtSelectPhoto = menuLayout.findViewById(R.id.mbtSelectPhoto);
@@ -413,7 +405,6 @@ public class MainActivityGlobalGallery extends AppCompatActivity {
                 public void onClick(View view) {
                         btMenu = MainActivityGlobalGallery.this.findViewById(R.id.btMenu);
 
-                        // Toggle menu: if already open, close it; otherwise open it
                         if (currentMenuLayout != null) {
                                 hideMenu();
                         } else if (currentEnterUrlLayout != null) {

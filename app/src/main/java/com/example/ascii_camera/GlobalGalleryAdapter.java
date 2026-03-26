@@ -62,7 +62,6 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
                 holder.tvAuthor.setText(fullAscii.getAuthor());
                 holder.tvArtname.setText(fullAscii.getArtName());
 
-                // Hide author name if showAuthor is false
                 if (showAuthor) {
                         holder.tvAuthor.setVisibility(android.view.View.VISIBLE);
                 } else {
@@ -79,7 +78,6 @@ public class GlobalGalleryAdapter extends RecyclerView.Adapter<GlobalGalleryAdap
 
                         AlertDialog alert = new AlertDialog.Builder(holder.ctx)
                                 .setCancelable(true)
-                                //.setMessage(holder.tvArtname.getText())
                                 .setView(customDialog)
                                 .create();
 

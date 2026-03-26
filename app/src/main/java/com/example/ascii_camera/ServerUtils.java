@@ -14,7 +14,7 @@ import okhttp3.Response;
 
 public class ServerUtils {
 
-        public static final String SERVER_SOCKET = "10.79.48.81:8080";
+        public static final String SERVER_SOCKET = "10.241.11.81:8080";
         public static final String SERVER_URL = "http://" + SERVER_SOCKET;
         private static final OkHttpClient client = new OkHttpClient.Builder()
                 .callTimeout(10, TimeUnit.SECONDS)
@@ -33,7 +33,7 @@ public class ServerUtils {
         public static boolean isOnline() {
                 Request request = new Request.Builder()
                         .url(SERVER_URL)
-                        .head() // just check headers, no body
+                        .head()
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {

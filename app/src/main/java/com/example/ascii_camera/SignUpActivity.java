@@ -63,7 +63,6 @@ public class SignUpActivity extends AppCompatActivity {
                                 return;
                         }
 
-                        // Hash the password before sending
                         String hashedPassword = Utils.hash(password);
 
                         JSONObject json = new JSONObject();
